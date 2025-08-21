@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Unsmoke.MVVM.Views.Dashboard"
+             xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False"
+             Shell.FlyoutBehavior="Flyout"
+             Title="Dashboard">
+    
+    <ContentPage.BindingContext>
+        <vm:DashboardViewModel/>
+    </ContentPage.BindingContext>
+
+        <ScrollView>
+        <Grid Background="#FFFFFF">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid HeightRequest="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".33*"/>
+                    <ColumnDefinition Width=".33*"/>
+                    <ColumnDefinition Width=".33*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="Black" HeightRequest="50" Stroke="Black" StrokeThickness="2">
+                    <Label Text="Burger" Grid.Column="0"/>
+                </Border>
+                <Label Text="Unsmoke" Grid.Column="1" HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"/>
+
+                <Label Text="Profile" Grid.Column="2" HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
+            </Grid>
+
+            <Frame Grid.Row="1" BackgroundColor="#373737" HeightRequest="150" WidthRequest="355" Margin="20" CornerRadius="44" BorderColor="Transparent">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".5*"/>
+                        <RowDefinition Height=".5*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width=".5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Text="Quit Smoking" TextColor="White"/>
+                    <Label Grid.Row="1" Text="Your Level : " TextColor="White"/>
+
+                    <Label Grid.Column="1" Text="ACHIEVEMENT" TextColor="White"/>
+                </Grid>
+            </Frame>
+            
+            <!--Progress Time-->
+            <Label Text="My Progress" TextColor="Black" Grid.Row="2" Margin="20,0,0,0"/>
+
+            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,40" BackgroundColor="#FE8400" CornerRadius="26" BorderColor="Transparent">
+                <Grid>
+                    <Label Text="Time without a cigarette" Margin="80,0,10,0"/>
+                    
+                    <!--Tthis the Time  MM/dd/hh/mm-->
+                    <Label Text="{Binding ElapsedFormatted}" Margin="20,20,0,0" FontSize="35" FontAttributes="Bold" CharacterSpacing="3.5"/>
+                    
+                    <Label Text="Days" Margin="33,75,0,0"/>
+
+                    <Label Text="Hours" Margin="100,75,0,0"/>
+
+                    <Label Text="Minutes" Margin="165,75,0,0"/>
+
+                    <Label Text="Seconds" Margin="235,75,0,0"/>
+                </Grid>
+
+            </Frame>
+            
+            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="3" HeightRequest="200" Margin="0,-50">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#FFBD7B" WidthRequest="100" Stroke="Transparent" Margin="15,0,0,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24"/>
+                        </Border.StrokeShape>
+                        <Grid>
+                            <Label Text="Cigarettes" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,15" FontSize="14"/>
+                            <Label Text="Avoided" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,32" FontSize="14"/>
+                            <Label Text="{Binding CiggarettedAvoided}" HorizontalOptions="Center" VerticalOptions="End" Margin="0,15" FontSize="14"/>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Background="#FFC000" WidthRequest="100" Stroke="Transparent" Margin="25,0,0,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24"/>
+                        </Border.StrokeShape>
+                        <Grid>
+                            <Label Text="Life" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
+                            <Label Text="Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,32" FontSize="14"/>
+                            <Label Text="{Binding LifeTimeSaved}" HorizontalOptions="Center" VerticalOptions="End" Margin="0,15" FontSize="14"/>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="2" Background="#FE8C00" WidthRequest="100" Stroke="Transparent" Margin="20,0,0,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24"/>
+                        </Border.StrokeShape>
+                        <Grid>
+
+                            <Label Text="Money" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
+                            <Label Text="Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,32" FontSize="14"/>
+                            <Label Text="{Binding MoneySaved}" HorizontalOptions="Center" VerticalOptions="End" Margin="0,15" FontSize="14"/>
+                        </Grid>
+
+                    </Border>
+
+                </Grid>
+
+            </Frame>
+
+           
+
+            <Border Grid.Row="4" BackgroundColor="AliceBlue"
+                    Margin="0,40" HeightRequest="160" 
+                    WidthRequest="350" 
+                    Background="#373737">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="24"/>
+                </Border.StrokeShape>
+                <HorizontalStackLayout>
+                    <!--Label-->
+                        <Label  Text="Today, I smoked" HorizontalOptions="Center" Margin="20" FontSize="20" Grid.ColumnSpan="3"
+                                TextColor="White"/>
+                        <!--Minus Button-->
+                        <ImageButton Source="dotnet_bot.png" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
+                                     Margin="-150,30,0,10"
+                                     HorizontalOptions="Start"/>
+                        <!--Number of Cigarettes-->
+                        <Label  Text="{Binding CigaretteToday}"
+                                Margin="20,10,0,0" HorizontalOptions="Center" VerticalOptions="Center" FontSize="50" 
+                                TextColor="White"
+                                />
+                        <!--Add button-->
+                        <ImageButton Source="dotnet_bot.png"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
+                                     Margin="20,20,0,0"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            
+        </Grid>
+    </ScrollView>
+
+
+</ContentPage>
