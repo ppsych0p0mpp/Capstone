@@ -63,7 +63,7 @@
                            HorizontalOptions="Center" 
                            VerticalTextAlignment="Center"
                            Padding="10"/>
-                    <Grid>
+                    <Grid >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -71,9 +71,9 @@
 
 
                         <RadioButton Content="Male"
-                                     IsChecked="{Binding SelectedGender, Converter={StaticResource EqualityConverter}, ConverterParameter=Male, Mode=TwoWay}"/>
-                        <RadioButton Grid.Column="1" Content="Female"
-                                     IsChecked="{Binding SelectedGender, Converter={StaticResource EqualityConverter}, ConverterParameter=Female, Mode=TwoWay}"/>
+                                     IsChecked="{Binding Assessment.Gender}"/>
+                        <RadioButton Grid.Column="1" Content="Female"   
+                                     IsChecked="{Binding Assessment.Gender}"/>
 
                     </Grid>
                 </VerticalStackLayout>
@@ -88,7 +88,7 @@
                     <Label Text="How Long Have You Been Using Cigarettes?"
                            VerticalTextAlignment="Center"
                            VerticalOptions="Start"
-                           FontSize="35"
+                           FontSize="30"
                            FontAttributes="Bold"
                            />
                 <!-- Months/Years Picker -->
@@ -100,7 +100,7 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         IsEnabled="True"
-                        >
+                        SelectedItem="{Binding Assessment.YearMonth}">
                     <Picker.Items>
                         <x:String>Months</x:String>
                         <x:String>Years</x:String>
@@ -110,14 +110,13 @@
                 
                 <!-- Duration Entry -->
                 <Entry VerticalOptions="Center" WidthRequest="100"
-                       Text="{Binding SmokingDurationValue, Mode=TwoWay}"
                        FontSize="50" 
                        Margin="0,83,110,0"
                        VerticalTextAlignment="Center"
                        Keyboard="Numeric"
                        HorizontalTextAlignment="Center"
                        MaxLength="2"
-                       />
+                       Text="{Binding Assessment.YearsOfSmoking}"/>
                     
             </Grid>
             
@@ -135,10 +134,16 @@
                     <Label Text="Times" 
                            Margin="200,150,0,0" 
                            FontSize="30"/>
+                    
                     <Entry WidthRequest="100" 
-                           VerticalOptions="Center"  
+                           VerticalOptions="Center"
                            FontSize="50" 
-                           Margin="70,-70,80,90"/>
+                           Keyboard="Numeric"
+                           Margin="20,-70,80,90"
+                           MaxLength="2"
+                           Text="{Binding Assessment.CigarettesPerDay}"
+                           VerticalTextAlignment="Center"
+                           HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </Grid>
            
@@ -157,10 +162,14 @@
                        FontSize="40"
                        Margin="0,0,10,-90"
                        VerticalOptions="Center"/>
-                <Entry WidthRequest="100"
+                <Entry WidthRequest="150"
                        VerticalOptions="Center"
-                       Margin="0,0,0,-60"
-                       FontSize="50"/>
+                       Margin="60,0,0,-70"
+                       FontSize="50"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       MaxLength="5"
+                       Text="{Binding Assessment.CigaretteCost, StringFormat='{0:F2}', Mode=TwoWay}"/>
             </Grid>
             
         </Frame>
@@ -190,7 +199,7 @@
 
         <!-- Result-->
 
-        <Frame>
+        <Frame IsVisible="{Binding IsSeventhVisible}"  HeightRequest="500" Margin="10,100,10,10">
 
             <Label Text="Result"/>
         </Frame>

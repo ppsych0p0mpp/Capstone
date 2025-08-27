@@ -21,6 +21,7 @@ namespace Unsmoke
 #endif
             builder.Services.AddSingleton<Dashboard>();
             builder.Services.AddSingleton<Assessment>();
+            builder.Services.AddSingleton<Progress>();
             return builder.Build();
         }
     }

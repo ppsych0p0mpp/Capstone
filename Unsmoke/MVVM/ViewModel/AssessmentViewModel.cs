@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Unsmoke.MVVM.Views;
+using Unsmoke.MVVM.Models;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -37,18 +38,48 @@ namespace Unsmoke.MVVM.ViewModel
         private bool isSeventhVisible = false;
 
         [ObservableProperty]
-        private string selectedGender;
-
-        [ObservableProperty]
-        private string smokingDurationValue; // only numbers from Entry
+        private Models.Assessment assessment = new Models.Assessment();
 
 
 
         private int currentIndex = 1;
 
-        public ICommand Show => new RelayCommand(ShowNext);
+        public ICommand Show { get; }
 
-        
+        public AssessmentViewModel()
+        {
+            Show = new RelayCommand(ShowNext);
+        }
+
+       private async void Assess()
+        {
+
+            if (string.IsNullOrEmpty(assessment.Gender)) //Validtion for gender. The control is Radio button
+            {
+                await Application.Current.MainPage.DisplayAlert("Required", "Please select your gender before continuing.", "OK");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(assessment.YearsOfSmoking.ToString()) || assessment.YearsOfSmoking <= 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your years/months of smoking before continuing.", "OK");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(assessment.CigarettesPerDay.ToString()) || assessment.CigarettesPerDay <= 0 || !assessment.CigarettesPerDay.ToString().All(char.IsDigit))
+            {
+                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarettes per day before continuing.", "OK");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(assessment.CigaretteCost.ToString()) || assessment.CigaretteCost <= 0 || !assessment.CigaretteCost.ToString().All(char.IsDigit))
+            {
+                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarette cost before continuing.", "OK");
+                return;
+            }
+        }
+
+
 
         private async void ShowNext()
         {
@@ -67,42 +98,31 @@ namespace Unsmoke.MVVM.ViewModel
             switch (currentIndex)
             {
                 case 1:
-                    IsFirstVisible = true;
-                    await Task.Delay(1000); //Get Started
+                    IsFirstVisible = true;//Get Started
                     break;
                 case 2:
                     IsSecondVisible = true; //select Gender Q1
-
-                    //Check validation before showing the next one
-                    if (currentIndex == 2 && string.IsNullOrEmpty(selectedGender))
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Required", "Please select your gender before proceeding.", "OK");
-                        return;
-                    }
-
+                    Assess(); // Call Assess method to validate inputs
                     break;
                 case 3:
                     IsThirdVisible = true;// Years of smoking Q2
-
-                    // Validate Q2 before moving to Q3
-                    if (string.IsNullOrEmpty(smokingDurationValue))
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Required", "Please enter how long you've been smoking", "OK");
-                        return;
-                    }
-
+                    Assess(); // Call Assess method to validate inputs
                     break;
                 case 4:
                     IsFourthVisible = true;// Cigarette perday Q3
-                    break; 
+                    Assess(); // Call Assess method to validate inputs
+                    break;
                 case 5:
                     IsFifthVisible = true;//Cigarette cost Q4
+                    Assess(); // Call Assess method to validate inputs
                     break;
                 case 6:
                     IsSixthVisible = true;//Confident in quitting Q5
+                    Assess(); // Call Assess method to validate inputs
                     break;
                 case 7:
                     IsSeventhVisible = true;
+                    Assess(); // Call Assess method to validate inputs
                     break;
             }
 

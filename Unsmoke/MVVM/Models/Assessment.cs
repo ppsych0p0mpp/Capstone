@@ -12,7 +12,8 @@ namespace Unsmoke.MVVM.Models
         public string UserID { get; set; }
         public DateTime DateTaken { get; set; }
         public string Gender { get; set; }
-        public DateTime YearsOfSmoking { get; set; }
+        public int YearsOfSmoking { get; set; }
+        public string YearMonth { get; set; }
         public double CigaretteCost { get; set; }
         public double TotalCost { get; set; }
         public double MoneySaved { get; set; }
