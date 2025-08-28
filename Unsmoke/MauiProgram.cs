@@ -20,6 +20,7 @@ namespace Unsmoke
     		builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<Dashboard>();
+            builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<Assessment>();
             builder.Services.AddSingleton<Progress>();
             return builder.Build();

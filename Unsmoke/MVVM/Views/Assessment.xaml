@@ -10,15 +10,16 @@
         <vm:AssessmentViewModel/>
     </ContentPage.BindingContext>
     
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <vm:EqualityConverter x:Key="EqualityConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
 
 
     <VerticalStackLayout>
+        <ImageButton Source="dotnet_bot"
+                     HeightRequest="50"
+                     WidthRequest="100"
+                     Margin="-340,0,0,0"
+                     Command="{Binding Back}"
+                     IsVisible="{Binding BackButton}"/>
+        
         <Frame BackgroundColor="#FFFFFF" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -42,10 +43,18 @@
                            HorizontalOptions="Center">
                     </Label>
 
-
+                    <Button Text="Get Started" FontSize="30"
+                             Grid.Row="1"
+                             HeightRequest="63"
+                             WidthRequest="195"
+                             CornerRadius="26"
+                             FontAttributes="Bold"
+                             Margin="10,130,0,0"
+                             Command="{Binding Show}"
+                             VerticalOptions="End"/>
                 </VerticalStackLayout>
-                
 
+                
             </Grid>
         </Frame>
         
@@ -53,29 +62,35 @@
         <Frame IsVisible="{Binding IsSecondVisible}" BackgroundColor="White" BorderColor="Yellow"
                HeightRequest="500" Margin="10,100,10,10">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
                 <VerticalStackLayout VerticalOptions="Center" Padding="40">
                     <Label Text="Select your Gender" HorizontalOptions="Center" FontSize="30" FontAttributes="Bold"/>
                     <Label Text="Sex and hormones impact how our body responds to cigarettes. Which sex best describes you?"  
                            HorizontalOptions="Center" 
                            VerticalTextAlignment="Center"
                            Padding="10"/>
-                    <Grid >
+                    <Grid Margin="0,100,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
                         <RadioButton Content="Male"
                                      IsChecked="{Binding Assessment.Gender}"/>
+                            
                         <RadioButton Grid.Column="1" Content="Female"   
                                      IsChecked="{Binding Assessment.Gender}"/>
 
+                        <Button Text="Next" Margin="0,100,0,0"
+                                Grid.ColumnSpan="2"
+                                Grid.Row="1"
+                                Command="{Binding secondbtnQ}"/>
+
                     </Grid>
+                    
                 </VerticalStackLayout>
             </Grid>
                 
@@ -117,7 +132,11 @@
                        HorizontalTextAlignment="Center"
                        MaxLength="2"
                        Text="{Binding Assessment.YearsOfSmoking}"/>
-                    
+
+                <Button Text="Next" Margin="0,120,0,0"
+                        VerticalOptions="End"
+                        Command="{Binding thirdbtnQ}"/>
+
             </Grid>
             
         </Frame>
@@ -145,6 +164,11 @@
                            VerticalTextAlignment="Center"
                            HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
+                
+                <Button Text="Next" Margin="0,120,0,0"
+                        VerticalOptions="End"
+                        Command="{Binding fourthbtnQ}"/>
+
             </Grid>
            
         </Frame>
@@ -170,6 +194,11 @@
                        VerticalTextAlignment="Center"
                        MaxLength="5"
                        Text="{Binding Assessment.CigaretteCost, StringFormat='{0:F2}', Mode=TwoWay}"/>
+
+                <Button Text="Next" Margin="0,120,0,0"
+                        VerticalOptions="End"
+                        Command="{Binding fifthbtnQ}"/>
+
             </Grid>
             
         </Frame>
@@ -182,26 +211,39 @@
                        VerticalOptions="Start"
                        FontAttributes="Bold"
                        FontSize="30"/>
-                <Image Source="dotnet_bot"/>
+                <Image Source="dotnet_bot"
+                       WidthRequest="200"
+                       HeightRequest="200"/>
+
+                <CollectionView SelectionMode="Single">
+                     
+                </CollectionView>
+
+                <!--<Button Text="Next" Margin="0,120,0,0"
+                        VerticalOptions="End"
+                        Command="{Binding sixthbtnQ}"/>-->
             </Grid>
            
         </Frame>
         
         
-        <Button Text="Get Started" FontSize="30"
-                Grid.Row="1"
-                HeightRequest="63"
-                WidthRequest="195"
-                CornerRadius="26"
-                FontAttributes="Bold"
-                Margin="10,130,0,0"
-                Command="{Binding Show}"/>
-
+      
         <!-- Result-->
 
         <Frame IsVisible="{Binding IsSeventhVisible}"  HeightRequest="500" Margin="10,100,10,10">
 
-            <Label Text="Result"/>
+            <Grid>
+                <Label Text="Result"/>
+
+            
+                <!--<Button Text="Next" Margin="0,120,0,0"
+                        VerticalOptions="End"
+                        Command="{Binding seventhbtnQ}"/>-->
+            </Grid>
+            
+            
         </Frame>
+
+       
     </VerticalStackLayout>
 </ContentPage>

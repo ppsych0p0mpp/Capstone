@@ -12,8 +12,10 @@ namespace Unsmoke.MVVM.ViewModel
     {
         public ObservableCollection<string> Achievements { get; set; }
 
+
         public ProgressVM()
         {
+
             Achievements = new ObservableCollection<string>
             {
                 "After 1 day smoke-free",
@@ -38,5 +40,11 @@ namespace Unsmoke.MVVM.ViewModel
                 "Lifetime milestone – Freedom from smoking"
             };
         }
+
+        //Function for the Achievements list
+        //First condition if the Time Without Cigarette is greater than or equal to 1 day it will unlock the first achievement
+        // Returns a list of unlocked achievements based on time without cigarette
+       
+
     }
 }
