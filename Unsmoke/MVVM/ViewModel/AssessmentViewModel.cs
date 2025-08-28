@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Unsmoke.MVVM.Views;
 using Unsmoke.MVVM.Models;
+using System.Collections.ObjectModel;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -38,50 +39,102 @@ namespace Unsmoke.MVVM.ViewModel
         private bool isSeventhVisible = false;
 
         [ObservableProperty]
+        private bool backButton = false;
+
+        [ObservableProperty]
         private Models.Assessment assessment = new Models.Assessment();
+
+        public ObservableCollection<string> Gender { get; set; }
+
 
 
 
         private int currentIndex = 1;
 
         public ICommand Show { get; }
+        public ICommand Back { get; }
+        public ICommand secondbtnQ { get; }
+        public ICommand thirdbtnQ { get; }
+        public ICommand fourthbtnQ { get; }
+        public ICommand fifthbtnQ { get; }
+        public ICommand sixthbtnQ { get; }
+        public ICommand seventhbtnQ { get; }
 
         public AssessmentViewModel()
         {
             Show = new RelayCommand(ShowNext);
+            secondbtnQ = new RelayCommand(NextQ);
+            thirdbtnQ = new RelayCommand(SecondQ);
+            fourthbtnQ = new RelayCommand(ThirdQ);
+            fifthbtnQ = new RelayCommand(FourthQ);
+            Back = new RelayCommand(BackQ);
+
         }
 
-       private async void Assess()
+
+        public async void NextQ()
         {
-
-            if (string.IsNullOrEmpty(assessment.Gender)) //Validtion for gender. The control is Radio button
+            //First Question Validation
+            if (string.IsNullOrEmpty(assessment.Gender))
             {
-                await Application.Current.MainPage.DisplayAlert("Required", "Please select your gender before continuing.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Required", "Please select your gender.", "OK");
                 return;
             }
-
-            if (string.IsNullOrWhiteSpace(assessment.YearsOfSmoking.ToString()) || assessment.YearsOfSmoking <= 0)
+            else
             {
-                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your years/months of smoking before continuing.", "OK");
-                return;
+                ShowNext();
             }
 
-            if (string.IsNullOrWhiteSpace(assessment.CigarettesPerDay.ToString()) || assessment.CigarettesPerDay <= 0 || !assessment.CigarettesPerDay.ToString().All(char.IsDigit))
+        }
+
+        public async void SecondQ()
+        {
+            //Second Question Validation
+            if (assessment.YearsOfSmoking <= 0 || string.IsNullOrEmpty(assessment.YearsOfSmoking.ToString()) || string.IsNullOrEmpty(assessment.YearMonth)
+                )
             {
-                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarettes per day before continuing.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Required", "Please enter how long you’ve been smoking.", "OK");
                 return;
             }
-
-            if (string.IsNullOrEmpty(assessment.CigaretteCost.ToString()) || assessment.CigaretteCost <= 0 || !assessment.CigaretteCost.ToString().All(char.IsDigit))
+            else
             {
-                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarette cost before continuing.", "OK");
+                ShowNext();
+            }
+        }
+
+        public async void ThirdQ()
+        {
+            //Third Question Validation
+            if (assessment.CigarettesPerDay <= 0 || string.IsNullOrEmpty(assessment.CigarettesPerDay.ToString()))
+            {
+                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarettes per day.", "OK");
+                return;
+            }
+            else
+            {
+                ShowNext();
+            }
+        }
+
+        public async void FourthQ()
+        {
+            //Fourth Question Validation
+            if (assessment.CigaretteCost <= 0 || string.IsNullOrEmpty(assessment.CigaretteCost.ToString()))
+            {
+                await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarette cost.", "OK");
+                return;
+            }
+            else
+            {
+                Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
                 return;
             }
         }
 
+       
 
 
-        private async void ShowNext()
+        private void ShowNext()
         {
             // Hide all
             IsFirstVisible = false;
@@ -91,52 +144,86 @@ namespace Unsmoke.MVVM.ViewModel
             IsFifthVisible = false;
             IsSixthVisible = false;
             IsSeventhVisible = false;
+            BackButton = false;
 
-            
-
-            // Show the next one
             switch (currentIndex)
             {
                 case 1:
-                    IsFirstVisible = true;//Get Started
+                    IsFirstVisible = true;
                     break;
+
                 case 2:
-                    IsSecondVisible = true; //select Gender Q1
-                    Assess(); // Call Assess method to validate inputs
+                    IsSecondVisible = true;
+                    BackButton = true;
                     break;
                 case 3:
-                    IsThirdVisible = true;// Years of smoking Q2
-                    Assess(); // Call Assess method to validate inputs
+                    IsThirdVisible = true; // Years smoking Q2
+                    BackButton = true;
                     break;
                 case 4:
-                    IsFourthVisible = true;// Cigarette perday Q3
-                    Assess(); // Call Assess method to validate inputs
+                    IsFourthVisible = true; // Cigarettes/day Q3
+                    BackButton = true;
                     break;
                 case 5:
-                    IsFifthVisible = true;//Cigarette cost Q4
-                    Assess(); // Call Assess method to validate inputs
+                    IsFifthVisible = true; // Cigarette cost Q4
+                    BackButton = true;
                     break;
                 case 6:
-                    IsSixthVisible = true;//Confident in quitting Q5
-                    Assess(); // Call Assess method to validate inputs
+                    IsSixthVisible = true; // Confidence Q5
+                    BackButton = true;
                     break;
                 case 7:
-                    IsSeventhVisible = true;
-                    Assess(); // Call Assess method to validate inputs
+                    IsSeventhVisible = true; // Last page
                     break;
             }
-
             currentIndex++;
-            if(currentIndex >= 7)
-            {
-                var dashboard = App.Services.GetRequiredService<Dashboard>();
-                Application.Current.MainPage = dashboard;
-                return;
-            }
         }
 
-        // Equality Converter for RadioButtons
-      
+        //Back button function
+        private void BackQ()
+        {
+            // Prevent going back before the first screen
+            if (currentIndex <= 2)
+                return;
+
+            // Step back
+            currentIndex--;
+
+            // Hide all first
+            IsFirstVisible = false;
+            IsSecondVisible = false;
+            IsThirdVisible = false;
+            IsFourthVisible = false;
+            IsFifthVisible = false;
+            IsSixthVisible = false;
+            IsSeventhVisible = false;
+
+            // Show the correct screen depending on currentIndex
+            switch (currentIndex)
+            {
+                case 1:
+                    IsFirstVisible = true;  // Get Started
+                    break;
+                case 2:
+                    IsSecondVisible = true; // Gender Q1
+                    break;
+                case 3:
+                    IsThirdVisible = true;  // Years of smoking Q2
+                    break;
+                case 4:
+                    IsFourthVisible = true; // Cigarettes per day Q3
+                    break;
+                case 5:
+                    IsFifthVisible = true;  // Cigarette cost Q4
+                    break;
+                case 6:
+                    IsSixthVisible = true;  // Confidence Q5
+                    break;
+                case 7:
+                    IsSeventhVisible = true; // Final
+                    break;
+            }
+        }
 
     }
 }

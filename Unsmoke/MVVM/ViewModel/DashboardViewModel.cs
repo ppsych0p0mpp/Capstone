@@ -16,6 +16,7 @@ namespace Unsmoke.MVVM.ViewModel
 {
     public partial class DashboardViewModel : ObservableObject
     {
+
         [ObservableProperty]
         private int addsmoke;
 
