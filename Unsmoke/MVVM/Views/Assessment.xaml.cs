@@ -9,6 +9,7 @@ public partial class Assessment : ContentPage
         InitializeComponent();
 	}
 
+
     private async void OnGenderImageClicked(object sender, EventArgs e)
     {
         if (sender is ImageButton imageButton)
@@ -40,4 +41,10 @@ public partial class Assessment : ContentPage
     {
         await Navigation.PopAsync();
     }
+    private void OnCustomPickerTapped(object sender, EventArgs e)
+{
+    HiddenPicker.Focus(); // Open the native picker
+        BackgroundColor.IsNotDefault();
+}
+
 }
