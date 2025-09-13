@@ -23,6 +23,8 @@ namespace Unsmoke
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<Assessment>();
             builder.Services.AddSingleton<Progress>();
+            builder.Services.AddSingleton<CreatePost>();
+            builder.Services.AddSingleton<Community>();
             return builder.Build();
         }
     }

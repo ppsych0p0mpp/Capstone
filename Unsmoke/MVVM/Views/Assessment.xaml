@@ -20,38 +20,59 @@
                      Command="{Binding Back}"
                      IsVisible="{Binding BackButton}"/>
         
-        <Frame BackgroundColor="#FFFFFF" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}">
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center"
+                               IsVisible="{Binding Dashlines}"
+                               Margin="10">
+            
+            <CollectionView ItemsSource="{Binding DashlineColors}" ItemsLayout="HorizontalList" HeightRequest="10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="{Binding .}"
+                        HeightRequest="8"
+                        WidthRequest="40"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 2"
+                        Margin="10"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </HorizontalStackLayout>
+
+
+        <Frame BackgroundColor="#FFFFFF" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
+               Margin="0,100,0,0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <VerticalStackLayout>
-                    <Image Source="dotnet_bot.png"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           HeightRequest="250"
-                           WidthRequest="250"
-                           Grid.Row="0"/>
-                    <Label Text="Ready to start your quitting journey towards a healthier You?"
-                           FontSize="50"
-                           VerticalOptions="Center"
-                           Grid.Row="0"
-                           TextColor="Black"
-                           FontAttributes="Bold"
-                           HorizontalTextAlignment="Center"
-                           HorizontalOptions="Center">
-                    </Label>
+                        <Image Source="get_started_flower_heart_icon.png"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HeightRequest="200"
+                               WidthRequest="200"
+                               Grid.Row="0"/>
+                        <Label Text="Ready To Start Your Quitting Journey Towards A Healthier You?"
+                               Margin="0,30,0,0"
+                               FontSize="40"
+                               VerticalOptions="Center"
+                               Grid.Row="0"
+                               TextColor="Black"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               HorizontalOptions="Center">
+                        </Label>
 
-                    <Button Text="Get Started" FontSize="30"
-                             Grid.Row="1"
-                             HeightRequest="63"
-                             WidthRequest="195"
-                             CornerRadius="26"
-                             FontAttributes="Bold"
-                             Margin="10,130,0,0"
-                             Command="{Binding Show}"
-                             VerticalOptions="End"/>
+                    <Button Text="Get Started" FontSize="25" BackgroundColor="#FFC000"
+                            Grid.Row="1"
+                            HeightRequest="63"
+                            WidthRequest="195"
+                            CornerRadius="26"
+                            TextColor="Black"
+                            FontAttributes="Bold"
+                            Margin="10,130,0,0"
+                            Command="{Binding Show}"/>
                 </VerticalStackLayout>
 
                 
@@ -59,15 +80,23 @@
         </Frame>
         
         <!-- Question 1 -->
-        <Frame IsVisible="{Binding IsSecondVisible}" BackgroundColor="White" BorderColor="Yellow"
-               HeightRequest="500" Margin="10,100,10,10">
+        <Frame IsVisible="{Binding IsSecondVisible}" BackgroundColor="White"
+               HeightRequest="600" Margin="0,20,0,0"
+               WidthRequest="380"
+               HasShadow="True">
             <Grid>
-                <VerticalStackLayout VerticalOptions="Center" Padding="40">
-                    <Label Text="Select your Gender" HorizontalOptions="Center" FontSize="30" FontAttributes="Bold"/>
-                    <Label Text="Sex and hormones impact how our body responds to cigarettes. Which sex best describes you?"  
-                           HorizontalOptions="Center" 
-                           VerticalTextAlignment="Center"
-                           Padding="10"/>
+                <VerticalStackLayout VerticalOptions="Center">
+                    <Label TextColor="Black" Text="Select Your Gender" HorizontalOptions="Center"
+                           FontSize="30" 
+                           FontAttributes="Bold"
+                           />
+                    <Label TextColor="Black" Text="Sex and hormones impact how our&#10;     body responds to cigarettes.&#10;  Which sex best describes you?"  
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Start"
+                           Margin="0,10,0,0"
+                           Padding="20"
+                           FontSize="16"
+                           LineBreakMode="WordWrap"/>
                     <Grid Margin="0,100,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -78,19 +107,42 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <RadioButton Content="Male"
-                                     IsChecked="{Binding Assessment.Gender}"/>
-                            
-                        <RadioButton Grid.Column="1" Content="Female"   
-                                     IsChecked="{Binding Assessment.Gender}"/>
+                        <ImageButton Grid.Column="0"
+                                     Source="male.png"
+                                     HeightRequest="100"
+                                     WidthRequest="100"
+                                     Margin="0,-50,0,90"
+                                     Command="{Binding SetGenderCommand}"
+                                     CommandParameter="Male"
+                                     BackgroundColor="{Binding MaleBackgroundColor}"
+                                     BorderWidth="2"
+                                     Scale="{Binding MaleImageScale}"/>
+                        <ImageButton Grid.Column="1"
+                                     Source="female.png"
+                                     HeightRequest="100"
+                                     WidthRequest="100"
+                                     Margin="0,-50,0,90"
+                                     Command="{Binding SetGenderCommand}"
+                                     CommandParameter="Female"
+                                     BackgroundColor="{Binding FemaleBackgroundColor}"
+                                     BorderWidth="2"
+                                     Scale="{Binding FemaleImageScale}"/>
+                        
 
                         <Button Text="Next" Margin="0,100,0,0"
                                 Grid.ColumnSpan="2"
                                 Grid.Row="1"
+                                BackgroundColor="#FFC000"
+                                TextColor="Black"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                CornerRadius="25"
+                                HeightRequest="50"
                                 Command="{Binding secondbtnQ}"/>
 
                     </Grid>
                     
+
                 </VerticalStackLayout>
             </Grid>
                 
@@ -98,43 +150,89 @@
         </Frame>
         
         <!-- Question 2-->
-        <Frame IsVisible="{Binding IsThirdVisible}" HeightRequest="500" Margin="10,100,10,10">
+        <Frame IsVisible="{Binding IsThirdVisible}" HeightRequest="600" Margin="20,20,20,20"
+               HasShadow="True">
             <Grid>
-                    <Label Text="How Long Have You Been Using Cigarettes?"
-                           VerticalTextAlignment="Center"
-                           VerticalOptions="Start"
-                           FontSize="30"
-                           FontAttributes="Bold"
-                           />
+                <Label Text="    How Long Have You Been Using Cigarettes?"
+                       VerticalTextAlignment="Center"
+                       VerticalOptions="Start"
+                       FontSize="30"        
+                       TextColor="Black"
+                       FontAttributes="Bold"
+                       LineBreakMode="WordWrap"
+                       Margin="0,15,0,0"/>
                 <!-- Months/Years Picker -->
-                <Picker Grid.Row="2"
-                        FontSize="20"
-                        Title="Select"
-                        WidthRequest="100"
-                        Margin="110,120,-20,0"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        IsEnabled="True"
-                        SelectedItem="{Binding Assessment.YearMonth}">
-                    <Picker.Items>
-                        <x:String>Months</x:String>
-                        <x:String>Years</x:String>
-                    </Picker.Items>
-                    
-                </Picker>
-                
+                <Grid Grid.Row="2"
+                      Margin="150,100,-20,0"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Center">
+
+                    <!-- Displayed Picker (custom look) -->
+                    <Grid ColumnDefinitions="Auto,Auto"
+                          Padding="5"
+                          VerticalOptions="Center">
+
+                        <!-- Selected Text -->
+                        <Label Text="{Binding Assessment.YearMonth, Mode=TwoWay}"
+                               FontSize="20"
+                               Margin="20,0,0,0"
+                               FontAttributes="Bold"
+                               TextColor="#FFC000"
+                               VerticalOptions="Center" />
+                        <!-- Down Arrow -->
+                        <Image Source="down.png"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="90,0,0,0"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End"
+                               Grid.Column="1"/>
+                    </Grid>
+
+                    <!-- Hidden Native Picker -->
+                    <Picker x:Name="HiddenPicker" 
+                            FontSize="30" 
+                            Title="Select"
+                            FontAttributes="Bold" 
+                            TextColor="#FCC000"
+                            IsVisible="True"
+                            SelectedItem="{Binding Assessment.YearMonth, Mode=TwoWay}">
+                        <Picker.Items>
+                            <x:String>Months</x:String>
+                            <x:String>Years</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <!-- Tap Gesture to open the Picker -->
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCustomPickerTapped"/>
+                    </Grid.GestureRecognizers>
+                </Grid>
+
+
                 <!-- Duration Entry -->
                 <Entry VerticalOptions="Center" WidthRequest="100"
-                       FontSize="50" 
-                       Margin="0,83,110,0"
+                       FontSize="80" 
+                       TextColor="#FCC000"
+                       BackgroundColor="Gray"
+                       Margin="-40,83,110,0"
                        VerticalTextAlignment="Center"
                        Keyboard="Numeric"
                        HorizontalTextAlignment="Center"
                        MaxLength="2"
-                       Text="{Binding Assessment.YearsOfSmoking}"/>
+                       Text="{Binding Assessment.YearsOfSmoking, Mode=TwoWay}"
+                       Placeholder="0"
+                       PlaceholderColor="#FCC000"
+                       Focused="YearsOfSmokingEntry_Focused"/>
 
                 <Button Text="Next" Margin="0,120,0,0"
                         VerticalOptions="End"
+                        FontAttributes="Bold"
+                        BackgroundColor="#FCC000"
+                        TextColor="Black"
+                        FontSize="18"
+                        CornerRadius="25"
+                        HeightRequest="50"
                         Command="{Binding thirdbtnQ}"/>
 
             </Grid>
@@ -142,32 +240,47 @@
         </Frame>
         
         <!-- Question 3-->
-        <Frame IsVisible="{Binding IsFourthVisible}" HeightRequest="500" Margin="10,100,10,10">
+        <Frame IsVisible="{Binding IsFourthVisible}" HeightRequest="600" Margin="20,20,20,20"
+               HasShadow="True">
             <Grid>
                 <VerticalStackLayout>
-                    <Label Text="How Often Do You Use Cigarettes?"
+                    <Label Text="How Often Do You Use &#10;          Cigarettes?"
+                           TextColor="Black"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           FontSize="35"
+                           FontSize="30"
                            FontAttributes="Bold"/>
-                    <Label Text="Times" 
-                           Margin="200,150,0,0" 
-                           FontSize="30"/>
-                    
+                    <Label Text="times / &#10; day"
+                           TextColor="#FCC000"
+                           Margin="190,150,0,0" 
+                           FontAttributes="Bold"
+                           FontSize="40"/>
+
                     <Entry WidthRequest="100" 
                            VerticalOptions="Center"
-                           FontSize="50" 
+                           TextColor="#FCC000"
+                           FontSize="80" 
                            Keyboard="Numeric"
-                           Margin="20,-70,80,90"
+                           Margin="-40,-130,80,90"
                            MaxLength="2"
-                           Text="{Binding Assessment.CigarettesPerDay}"
+                           BackgroundColor="Gray"
+                           Text="{Binding Assessment.CigarettesPerDay, Mode=TwoWay}"
+                           Placeholder="0"
+                           PlaceholderColor="#FCC000"
+                           Focused="CigarettesPerDayEntry_Focused"
                            VerticalTextAlignment="Center"
                            HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
-                
+
                 <Button Text="Next" Margin="0,120,0,0"
-                        VerticalOptions="End"
-                        Command="{Binding fourthbtnQ}"/>
+                         VerticalOptions="End"
+                         FontAttributes="Bold"
+                         BackgroundColor="#FCC000"
+                         TextColor="Black"
+                         FontSize="18"
+                         CornerRadius="25"
+                         HeightRequest="50"
+                         Command="{Binding fourthbtnQ}"/>
 
             </Grid>
            
@@ -175,53 +288,93 @@
         
         <!-- Question 4-->
         
-        <Frame IsVisible="{Binding IsFifthVisible}" HeightRequest="500" Margin="10,100,10,10">
+        <Frame IsVisible="{Binding IsFifthVisible}" HeightRequest="600" Margin="20,20,20,20"
+               HasShadow="True">
             <Grid>
-                <Label Text="On An Average, How Much Does Per Cigarette Cost?"
+                <Label Text="On An Average, How &#10;     Much Does Per&#10;     Cigarette Cost?"
                        HorizontalOptions="Center"
                        VerticalOptions="Start"
-                       FontSize="35"
+                       FontSize="30"
                        FontAttributes="Bold"/>
-                <Label Text="Pesos"
-                       FontSize="40"
-                       Margin="0,0,10,-90"
+                <Label Text="₱"
+                       FontSize="70"
+                       Margin="80,0,10,-90"
                        VerticalOptions="Center"/>
                 <Entry WidthRequest="150"
                        VerticalOptions="Center"
-                       Margin="60,0,0,-70"
+                       Margin="60,0,0,-80"
                        FontSize="50"
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"
                        MaxLength="5"
-                       Text="{Binding Assessment.CigaretteCost, StringFormat='{0:F2}', Mode=TwoWay}"/>
+                       Text="{Binding Assessment.CigaretteCost, Mode=TwoWay}"
+                       Placeholder="0"
+                       Keyboard="Numeric"
+                       Focused="CigaretteCostEntry_Focused"/>
 
                 <Button Text="Next" Margin="0,120,0,0"
-                        VerticalOptions="End"
-                        Command="{Binding fifthbtnQ}"/>
+                         VerticalOptions="End"
+                         FontAttributes="Bold"
+                         BackgroundColor="#FCC000"
+                         TextColor="Black"
+                         FontSize="18"
+                         CornerRadius="25"
+                         HeightRequest="50"
+                         Command="{Binding fifthbtnQ}"/>
 
             </Grid>
             
         </Frame>
         
         <!-- Question 5-->
-        <Frame IsVisible="{Binding IsSixthVisible}" HeightRequest="500" Margin="10,100,10,10">
+        <Frame IsVisible="{Binding IsSixthVisible}" HeightRequest="600" Margin="20,20,20,20"
+               HasShadow="True">
             <Grid>
-                <Label Text="How Confident Are You In Your Ability To Quit Cigarettes?"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Start"
-                       FontAttributes="Bold"
-                       FontSize="30"/>
-                <Image Source="dotnet_bot"
-                       WidthRequest="200"
-                       HeightRequest="200"/>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="    How Confident Are You&#10;     In Your Ability To Quit &#10;            Cigarettes?"
+                           FontAttributes="Bold"
+                           FontSize="26"
+                           LineBreakMode="WordWrap"/>
+                    <CarouselView ItemsSource="{Binding ConfidenceIcons}"
+                                     Position="{Binding SelectedConfidenceIndex, Mode=TwoWay}"
+                                     HeightRequest="120"
+                                     HorizontalOptions="Center"
+                                     IndicatorView="confidenceIndicator"
+                                  Margin="0,40,0,0">
 
-                <CollectionView SelectionMode="Single">
-                     
-                </CollectionView>
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}"
+                                       HeightRequest="100"
+                                       WidthRequest="100"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                    <IndicatorView x:Name="confidenceIndicator"
+                                   IndicatorColor="Gray"
+                                   SelectedIndicatorColor="Gold"
+                                   HorizontalOptions="Center"
+                                   Margin="0,10,0,0"/>
+                    <Label Text="{Binding ConfidenceText}"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,30,0,0"/>
 
-                <!--<Button Text="Next" Margin="0,120,0,0"
-                        VerticalOptions="End"
-                        Command="{Binding sixthbtnQ}"/>-->
+                    <Button Text="Next" Margin="0,120,0,0"
+                             VerticalOptions="End"
+                             FontAttributes="Bold"
+                             BackgroundColor="#FCC000"
+                             TextColor="Black"
+                             FontSize="18"
+                             CornerRadius="25"
+                             HeightRequest="50"
+                             Command="{Binding sixthbtnQ}"/>
+                </VerticalStackLayout>
+
+                
             </Grid>
            
         </Frame>
@@ -229,21 +382,56 @@
         
       
         <!-- Result-->
+        <!-- Result Page -->
+        <Frame IsVisible="{Binding IsSeventhVisible}" 
+               Margin="20,100,20,20"
+               Padding="15"
+               CornerRadius="20"
+               HasShadow="True"
+               BackgroundColor="White"
+               HeightRequest="600">
 
-        <Frame IsVisible="{Binding IsSeventhVisible}"  HeightRequest="500" Margin="10,100,10,10">
+            <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
 
-            <Grid>
-                <Label Text="Result"/>
+                <!-- Header -->
+                <Label Text="Assessment Results"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="#333"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Start"
+                       Margin="0,0,0,10"/>
 
-            
-                <!--<Button Text="Next" Margin="0,120,0,0"
-                        VerticalOptions="End"
-                        Command="{Binding seventhbtnQ}"/>-->
+                <!-- Content Section -->
+                <ScrollView Grid.Row="1" Margin="0,10,0,10">
+                    <StackLayout Spacing="12" Padding="5">
+
+                        <!-- Each line of summary in a styled frame -->
+                        <Frame BackgroundColor="#F5F5F5" Padding="10" CornerRadius="12" HasShadow="False">
+                            <Label Text="{Binding SummaryMessage}" 
+                           FontSize="16"
+                           TextColor="#000000"
+                           HorizontalTextAlignment="Start"
+                           LineBreakMode="WordWrap"/>
+                        </Frame>
+
+                    </StackLayout>
+                </ScrollView>
+
+                <!-- Button Section -->
+                <Button Grid.Row="2"
+                        Text="Finish"
+                        BackgroundColor="#FFC000"
+                        TextColor="Black"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        Margin="0,10,0,0"
+                        Command="{Binding seventhbtnQ}"/>
             </Grid>
-            
-            
         </Frame>
 
-       
+
     </VerticalStackLayout>
 </ContentPage>

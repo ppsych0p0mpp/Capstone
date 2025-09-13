@@ -8,8 +8,9 @@ namespace Unsmoke.MVVM.Models
 {
     public class Achievement
     {
-        public int AchievementId { get; set; }
-        public string AchievementName { get; set; }
-        public int AchievementPoints { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Icon { get; set; }
+        public bool IsUnlocked { get; set; }
     }
 }

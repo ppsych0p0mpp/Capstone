@@ -26,7 +26,10 @@ namespace Unsmoke.MVVM.ViewModel
         [ObservableProperty]
         private DateTime lastSmokeTime = DateTime.Now;
 
+
         public DashboardData Data { get; set; }
+
+        private Models.Assessment _assessment = new Models.Assessment();
         public ICommand AddCigarette { get;}
         public ICommand MinusCigarette { get; }
 
@@ -36,7 +39,8 @@ namespace Unsmoke.MVVM.ViewModel
         {
             Data = new DashboardData
             {
-                CigarettesSmokedToday = 0
+                CigarettesSmokedToday = 0,
+                CigarettedAvoided = 0
             };
 
 
@@ -48,6 +52,7 @@ namespace Unsmoke.MVVM.ViewModel
             _timer.Interval = TimeSpan.FromSeconds(1);   // update every second
             _timer.Tick += (_, __) => UpdateElapsed();
             _timer.Start();
+
         }
 
         public int CigaretteToday => Data.CigarettesSmokedToday;
@@ -65,7 +70,6 @@ namespace Unsmoke.MVVM.ViewModel
         private void AddCigaretteAction()
         {
             addsmoke = Data.CigarettesSmokedToday++;
-
             //reset Timer
             lastSmokeTime = DateTime.Now;
             timewithoutCigarette = TimeSpan.Zero; // Reset the time without cigarette
@@ -79,12 +83,13 @@ namespace Unsmoke.MVVM.ViewModel
             {
                 Data.CigarettesSmokedToday--;
                 addsmoke = Data.CigarettesSmokedToday;
+
+                //Update cigarettes avoided
                 OnPropertyChanged(nameof(CigaretteToday));
             }
         }
 
         //Add a funtion for time when click add smoke it will revert back the time to zero.
-
         private void UpdateElapsed()
         {
             timewithoutCigarette = DateTime.Now - lastSmokeTime;
@@ -98,5 +103,18 @@ namespace Unsmoke.MVVM.ViewModel
             OnPropertyChanged(nameof(Seconds));
             OnPropertyChanged(nameof(ElapsedFormatted));
         }
+
+        // Function to calculate cigarettes avoided if time without cigarette exceeds 24 hours
+        //private void CalculateCigarettesAvoided()
+        //{
+        //    if (timewithoutCigarette.Seconds >= 10)
+        //    {
+        //        Data.CigarettedAvoided++;
+        //        OnPropertyChanged(nameof(Data.CigarettedAvoided));
+        //    }
+        //}
+
+
+
     }
 }

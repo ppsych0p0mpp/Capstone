@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
-namespace Unsmoke.MVVM.ViewModel
+namespace Unsmoke.Converters
 {
-    public partial class EqualityConverter : IValueConverter
+    public class BoolToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.ToString() == parameter?.ToString();
+            return (bool)value
+                ? new SolidColorBrush(Color.FromArgb("#FCC000"))  // Yellow if unlocked
+                : new SolidColorBrush(Colors.LightGray);          // Gray if locked
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value) return parameter?.ToString();
-            return null;
+            throw new NotImplementedException();
         }
     }
 }
