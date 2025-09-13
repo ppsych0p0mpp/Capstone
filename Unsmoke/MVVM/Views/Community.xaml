@@ -2,11 +2,86 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Unsmoke.MVVM.Views.Community"
-             Title="Community">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
+             Title="Community"
+             >
+
+    <ContentPage.BindingContext>
+        <vm:CommunityVm/>
+    </ContentPage.BindingContext>
+    
+    
+    <Grid RowDefinitions="*,Auto,Auto">
+        <ScrollView>
+            <VerticalStackLayout>
+                <HorizontalStackLayout Spacing="120">
+                    <Border  Background="Black" HeightRequest="50" Stroke="Black" StrokeThickness="2">
+                        <Label Text="Burger" Grid.Column="0"
+                               HorizontalOptions="Start"/>
+                    </Border>
+                    <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
+                           />
+                    <Label Text="Profile"  HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
+                </HorizontalStackLayout>
+
+                <Border HeightRequest="150" WidthRequest="370" BackgroundColor="#FFFFFF"
+                        Margin="20"
+                        Stroke="Black"
+                        StrokeThickness=".5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="30"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black"
+                                Offset="10,10"
+                                Radius="10"
+                                Opacity="0.5"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout>
+                        <Label Text="Community"
+                               Margin="25,20,0,0"/>
+                        <Button VerticalOptions="End"
+                                Text="Create Post"
+                                Margin="20,40"
+                                CornerRadius="30"
+                                FontSize="20"
+                                TextColor="Black"
+                                BackgroundColor="#FFC000"
+                                Command="{Binding GotoCreatePost}"/>
+                    </VerticalStackLayout>
+                    
+
+                </Border>
+
+                <Label Text="Community Feed"
+                       Margin="20"/>
+                <CollectionView ItemsSource="{Binding Posts}"
+                                HeightRequest="500">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Stroke="Black" StrokeThickness="1" Margin="0"
+                                    BackgroundColor="White"
+                                    VerticalOptions="Center"
+                                    WidthRequest="370"
+                                    HeightRequest="200">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                
+                                <VerticalStackLayout Padding="10">
+                                    <Label Text="{Binding Tags}" FontSize="12" TextColor="Black"/>
+                                    <Label Text="Hello" FontSize="30"/>
+                                    <Label Text="{Binding Content}" FontSize="30" TextColor="Gray"
+                                           VerticalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                
+            </VerticalStackLayout>
+            
+        </ScrollView>
+    </Grid>
 </ContentPage>

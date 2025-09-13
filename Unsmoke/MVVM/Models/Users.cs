@@ -13,6 +13,5 @@ namespace Unsmoke.MVVM.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public int age { get; set; }
-        public int DaySmokeFree { get; set; }
     }
 }

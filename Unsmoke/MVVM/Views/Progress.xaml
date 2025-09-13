@@ -9,10 +9,11 @@
         <vm:ProgressVM/>
     </ContentPage.BindingContext>
     
-    
+
     <ScrollView>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -32,16 +33,17 @@
                 <Label Text="Profile" Grid.Column="2" HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
             </Grid>
 
+            <!--Item Comparison-->
             <Label Text="Item Comparison"
                    Margin="20,20,0,0"
                    Grid.Row="1"
                    FontSize="20"/>
-            <Border HeightRequest="250" BackgroundColor="Black" WidthRequest="350"
+
+            <Border HeightRequest="250" BackgroundColor="#2E2E2E" WidthRequest="370"
                     Grid.Row="1"
-                    Margin="70">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="24"/>
-                </Border.StrokeShape>
+                    Margin="40,70,40,0"
+                    StrokeShape="RoundRectangle 20">
+                
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -61,38 +63,29 @@
                             Margin="10"/>
                     <Border>
                     </Border>
-                    <Border Grid.Column="1" Stroke="Transparent"
-                             Margin="10,-100,0,0"
-                             HeightRequest="50"
+                    <Border Grid.Column="1" Stroke="White"
+                            Margin="10,-100,0,0"
+                            HeightRequest="50"
+                            WidthRequest="150"
                              >
                         <Grid>
-                            <Label Grid.Column="1"
-                                    Text="Name "
-                                    TextColor="White"
-                                   VerticalOptions="End"
-                                   />
-                            <Label Text="$1000"
-                                   Grid.Column="1"
-                                   Margin="0,0,0,0"
+                            <Entry Placeholder="NAME"
+                                   PlaceholderColor="White"
                                    TextColor="White"
-                                   VerticalOptions="Start"
-                                   FontSize="20"/>
+                                   FontSize="16"
+                                   HorizontalTextAlignment="Center"/>
                         </Grid>
                     </Border>
-                    <Border Grid.Column="1" Stroke="Transparent"
+                    <Border Grid.Column="1" Stroke="White"
                             Margin="10,30,0,0"
                             HeightRequest="50"
                             >
                         <Grid>
-                            <Label Grid.Column="1"
-                                   Text="Price "
+                            <Entry Placeholder="PRICE"
+                                   PlaceholderColor="White"
                                    TextColor="White"
-                                   VerticalOptions="End"/>
-                            <Label Text="$1000"
-                                   Grid.Column="1"
-                                   Margin="0,0,0,0"
-                                   TextColor="White"
-                                   FontSize="20"/>
+                                   FontSize="16"
+                                   HorizontalTextAlignment="Center"/>
                         </Grid>
                     </Border>
 
@@ -102,41 +95,103 @@
         >
                         <Grid>
                             <Label Grid.Column="1"
-                                   Text="Money Saved:  "
-                                   TextColor="White"/>
-                            <Label Text="$1000"
-                                   Grid.Column="1"
-                                   Margin="95,0,0,0"
-                                   TextColor="White"/>
+                                   Text="Click to show Progress"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
                         </Grid>
                     </Border>
                 </Grid>
             </Border>
 
+            <!--Click Show Savings-->
+            <Border StrokeThickness="0"
+                    BackgroundColor="#2E2E2E"
+                    Padding="15"
+                    Margin="23,20,23,0"
+                    Grid.Row="2"
+                    HeightRequest="250">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20"/>
+                </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="15">
+                    <!-- Total Saved Header -->
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Image Source="savings_icon.png" HeightRequest="30" WidthRequest="30"/>
+                        <VerticalStackLayout>
+                            <Label Text="₱750"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White"/>
+                            <Label Text="Total Saved"
+                       FontSize="12"
+                       TextColor="#BDBDBD"/>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <!-- Daily Goal -->
+                    <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Daily savings goal" FontSize="12" TextColor="White" HorizontalOptions="StartAndExpand"/>
+                        <Label Text="₱50/₱50" FontSize="12" TextColor="White" HorizontalOptions="End"/>
+                    </HorizontalStackLayout>
+                    <ProgressBar Progress="1" HeightRequest="6" ProgressColor="#FFD700" BackgroundColor="#555"/>
+
+                    <!-- Weekly Goal -->
+                    <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Weekly savings goal" FontSize="12" TextColor="White" HorizontalOptions="StartAndExpand"/>
+                        <Label Text="₱350/₱350" FontSize="12" TextColor="White" HorizontalOptions="End"/>
+                    </HorizontalStackLayout>
+                    <ProgressBar Progress="1" HeightRequest="6" ProgressColor="#4CAF50" BackgroundColor="#555"/>
+
+                    <!-- Monthly Goal -->
+                    <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Label Text="Monthly savings goal" FontSize="12" TextColor="White" HorizontalOptions="StartAndExpand"/>
+                        <Label Text="₱750/₱1,500" FontSize="12" TextColor="White" HorizontalOptions="End"/>
+                    </HorizontalStackLayout>
+                    <ProgressBar Progress="0.5" HeightRequest="6" ProgressColor="#2196F3" BackgroundColor="#555"/>
+                </VerticalStackLayout>
+            </Border>
+
+
+            <!--Milestone -->
             <Label Text="Milestone Achieved"
-                   Grid.Row="2" Margin="20,-30,0,0"
+                   Grid.Row="3" Margin="20,20,0,0"
                    TextColor="Black"
                    FontSize="20"
                    />
             
-            <CollectionView Grid.Row="2"
+            <CollectionView Grid.Row="3"
                             ItemsSource="{Binding Achievements}"
-                            VerticalOptions="Start">
+                            VerticalOptions="Start"
+                            Margin="10,50,0,0"
+                            >
+                <CollectionView.ItemsLayout>
+                    <!-- 2 Columns -->
+                    <GridItemsLayout Orientation="Vertical" Span="2"/> 
+                </CollectionView.ItemsLayout>
   
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border HeightRequest="50"
-                                WidthRequest="350"
+                        <Border StrokeThickness="0"
                                 Stroke="Black"
-                                Margin="5">
-                            <Grid>
-                                <Label Grid.Column="1"
-                                       Text="{Binding .}"
-                                       TextColor="Black"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
-                            </Grid>
-
+                                Margin="5"
+                                Padding="10"
+                                HeightRequest="100"
+                                Background="{Binding IsUnlocked, Converter={StaticResource BoolToColorConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20"/>
+                            </Border.StrokeShape>
+                            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                                <Label Text="{Binding Title}" 
+                                       FontAttributes="Bold" 
+                                       FontSize="16"
+                                       TextColor="{Binding IsUnlocked, Converter={StaticResource BoolToTextColorConverter}}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding Description}" 
+                                       FontSize="12"
+                                       TextColor="{Binding IsUnlocked, Converter={StaticResource BoolToTextColorConverter}}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

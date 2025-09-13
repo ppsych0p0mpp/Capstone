@@ -2,49 +2,38 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unsmoke.MVVM.Models;
+
 
 namespace Unsmoke.MVVM.ViewModel
 {
     public partial class ProgressVM : ObservableObject
     {
-        public ObservableCollection<string> Achievements { get; set; }
-
+        public ObservableCollection<Achievement> Achievements { get; set; }
+        public ObservableCollection<Item> Items { get; set; }
+        private Item _items = new Item();
 
         public ProgressVM()
         {
-
-            Achievements = new ObservableCollection<string>
-            {
-                "After 1 day smoke-free",
-                "Saved ₱100",
-                "48 hours in",
-                "3-day streak",
-                "7 days smoke-free",
-                "Saved ₱1,000",
-                "2 weeks smoke-free",
-                "21 days smoke-free",
-                "Saved ₱5,000",
-                "30 days no smoking",
-                "45 days smoke-free",
-                "60 days smoke-free",
-                "90 days smoke-free (3 months)",
-                "Saved ₱10,000",
-                "120 days smoke-free (4 months)",
-                "6 months smoke-free",
-                "Saved ₱20,000",
-                "9 months smoke-free",
-                "1 year smoke-free",
-                "Lifetime milestone – Freedom from smoking"
-            };
+            Achievements = new ObservableCollection<Achievement>
+                {
+                    new Achievement { Title = "First Day", Description = "24 hours smoke-free", Icon = "firstday.png", IsUnlocked = true },
+                    new Achievement { Title = "Money Saver", Description = "Saved ₱100", Icon = "moneysaver.png", IsUnlocked = true },
+                    new Achievement { Title = "Health Hero", Description = "3 days clean", Icon = "healthhero.png", IsUnlocked = true },
+                    new Achievement { Title = "Week Warrior", Description = "7 days smoke-free", Icon = "weekwarrior.png", IsUnlocked = false },
+                    new Achievement { Title = "Strong Lungs", Description = "2 weeks clean", Icon = "lungs.png", IsUnlocked = false },
+                    new Achievement { Title = "Champion", Description = "30 days milestone", Icon = "champion.png", IsUnlocked = false },
+                    // Add the rest of your achievements here...
+                };
+            Items = new ObservableCollection<Item>();
         }
 
-        //Function for the Achievements list
-        //First condition if the Time Without Cigarette is greater than or equal to 1 day it will unlock the first achievement
-        // Returns a list of unlocked achievements based on time without cigarette
-       
+        //Craete the function here
+        
 
     }
 }

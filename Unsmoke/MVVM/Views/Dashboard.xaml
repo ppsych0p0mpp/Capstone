@@ -50,6 +50,7 @@
                     <Label Grid.Row="1" Text="Your Level : " TextColor="White"/>
 
                     <Label Grid.Column="1" Text="ACHIEVEMENT" TextColor="White"/>
+                    <Image Source="medal" Margin="250,70,0,0" HeightRequest="100" WidthRequest="100"/>
                 </Grid>
             </Frame>
             
@@ -86,9 +87,14 @@
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
                         <Grid>
-                            <Label Text="Cigarettes" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,15" FontSize="14"/>
-                            <Label Text="Avoided" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,32" FontSize="14"/>
-                            <Label Text="{Binding CiggarettedAvoided}" HorizontalOptions="Center" VerticalOptions="End" Margin="0,15" FontSize="14"/>
+                            <Label Text="Cigarettes&#10;  Avoided" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,15" FontSize="14"/>
+                            <Image Source="cigarette" HeightRequest="50" Margin="0,0,0,0"/>
+                            <Label Text="0"
+                                   VerticalOptions="End"
+                                   Margin="43,0,0,10"
+                                   FontSize="25"
+                                   FontAttributes="Bold"
+                                   />
                         </Grid>
                     </Border>
                     <Border Grid.Column="1" Background="#FFC000" WidthRequest="100" Stroke="Transparent" Margin="25,0,0,10">
@@ -96,20 +102,29 @@
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
                         <Grid>
-                            <Label Text="Life" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
-                            <Label Text="Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,32" FontSize="14"/>
-                            <Label Text="{Binding LifeTimeSaved}" HorizontalOptions="Center" VerticalOptions="End" Margin="0,15" FontSize="14"/>
+                            <Label Text="Life Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
+                            <Image Source="medical_aid" HeightRequest="50" Margin="0,0,0,0"/>
+                            <Label Text="{Binding Data.LifeTimeSaved}"
+                                   VerticalOptions="End"
+                                   Margin="43,0,0,10"
+                                   FontSize="25"
+                                   FontAttributes="Bold"/>
                         </Grid>
                     </Border>
-                    <Border Grid.Column="2" Background="#FE8C00" WidthRequest="100" Stroke="Transparent" Margin="20,0,0,10">
+                    <Border Grid.Column="2" Background="#FE8C00" WidthRequest="100" Stroke="Transparent" Margin="20,0,0,10"
+                            >
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
                         <Grid>
 
-                            <Label Text="Money" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
-                            <Label Text="Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,32" FontSize="14"/>
-                            <Label Text="{Binding MoneySaved}" HorizontalOptions="Center" VerticalOptions="End" Margin="0,15" FontSize="14"/>
+                            <Label Text="Money Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
+                            <Image Source="peso" HeightRequest="50" Margin="0,0,0,0"/>
+                            <Label Text="{Binding Data.MoneySaved}"
+                                   VerticalOptions="End"
+                                   Margin="43,0,0,10"
+                                   FontSize="25"
+                                   FontAttributes="Bold"/>
                         </Grid>
 
                     </Border>
@@ -129,11 +144,13 @@
                 </Border.StrokeShape>
                 <HorizontalStackLayout>
                     <!--Label-->
-                        <Label  Text="Today, I smoked" HorizontalOptions="Center" Margin="20" FontSize="20" Grid.ColumnSpan="3"
-                                TextColor="White"/>
+                        <Label  Text="Today, I smoked" Margin="100,20,0,0" FontSize="20"
+                                TextColor="White"
+                                HorizontalOptions="Center"
+                                />
                         <!--Minus Button-->
-                        <ImageButton Source="dotnet_bot.png" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
-                                     Margin="-150,30,0,10"
+                        <ImageButton Source="minus_icon" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
+                                     Margin="-210,30,0,10"
                                      HorizontalOptions="Start"/>
                         <!--Number of Cigarettes-->
                         <Label  Text="{Binding CigaretteToday}"
@@ -141,12 +158,10 @@
                                 TextColor="White"
                                 />
                         <!--Add button-->
-                        <ImageButton Source="dotnet_bot.png"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
+                        <ImageButton Source="plus_icon"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
                                      Margin="20,20,0,0"/>
                 </HorizontalStackLayout>
             </Border>
-
-            
         </Grid>
     </ScrollView>
 
