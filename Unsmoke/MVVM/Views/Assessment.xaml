@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Unsmoke.MVVM.Views.Assessment"
              Title="Assessment"
+             NavigationPage.HasNavigationBar="False"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
-             BackgroundColor="#FFFFFF">
+             BackgroundColor="#6E6E6E">
     
     <ContentPage.BindingContext>
         <vm:AssessmentViewModel/>
@@ -220,7 +221,7 @@
                        Keyboard="Numeric"
                        HorizontalTextAlignment="Center"
                        MaxLength="2"
-                       Text="{Binding Assessment.YearsOfSmoking, Mode=TwoWay}"
+                       Text="{Binding Assessment.DurationOfSmoking, Mode=TwoWay}"
                        Placeholder="0"
                        PlaceholderColor="#FCC000"
                        Focused="YearsOfSmokingEntry_Focused"/>
