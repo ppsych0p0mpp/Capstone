@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Unsmoke.MVVM.Views.LoginPage"
+             xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
+             NavigationPage.HasNavigationBar="False"
+             Title="LoginPage"
+             BackgroundColor="#f4fbf8">
+    
+    <ContentPage.BindingContext>
+        <vm:LoginVm/>
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <VerticalStackLayout Spacing="20">
+            <Image Source="dotnet_bot"/>
+            <Label Text=" Welcome to Unsmoke "
+                   HorizontalOptions="Center"
+                   FontSize="20"
+                   FontAttributes="Bold"/>
+
+            <Label Text="Username"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   Margin="30,30,0,0"/>
+            <Border HeightRequest="50"
+                    WidthRequest="350"
+                    Stroke="Black"
+                    Margin="0,-10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30"/>
+                </Border.StrokeShape>
+                <Entry Placeholder="Enter your Username"
+                       WidthRequest="300"
+                       HeightRequest="80"
+                       FontSize="18"
+                       Text="{Binding User.Username}"
+                       />
+            </Border>
+            <Label Text="Password"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   Margin="30,0,0,0"/>
+            <Border HeightRequest="50"
+                    WidthRequest="350"
+                    Stroke="Black"
+                    Margin="0,-10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30"/>
+                </Border.StrokeShape>
+                <HorizontalStackLayout>
+                <Entry Placeholder="Enter your Password"
+                       WidthRequest="300"
+                       HeightRequest="80"
+                       FontSize="18"
+                       Text="{Binding User.Password}"
+                       IsPassword="{Binding IsPassword, Mode=TwoWay}"
+                       Margin="20,0,0,0"/>
+                    <ImageButton Source="{Binding EyeIcon}"
+                                 Margin="-20"
+                                 WidthRequest="30"
+                                 Command="{Binding TogglePassword}"/>
+                </HorizontalStackLayout>
+            </Border>
+
+            <Button Text="Sign In"
+                    BackgroundColor="#FCC000"
+                    TextColor="Black"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    Margin="0,50,0,0"
+                    WidthRequest="290"
+                    HeightRequest="50"
+                    CornerRadius="30"
+                    Command="{Binding LoginCommand}"/>
+            <Label Text="Don't have an account?"
+                   HorizontalOptions="Center"
+                   Margin="-50,-10,0,0"/>
+            <Label Text="Sign In"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="150,-40,0,0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GotoRegister}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

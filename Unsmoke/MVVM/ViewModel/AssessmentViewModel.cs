@@ -129,7 +129,6 @@ namespace Unsmoke.MVVM.ViewModel
 
         public ICommand ContinueCommand { get; }
 
-        private int currentIndex = 1;
 
         public ICommand Show { get; }
         public ICommand Back { get; }
@@ -182,7 +181,7 @@ namespace Unsmoke.MVVM.ViewModel
         public async void SecondQ()
         {
             //Second Question Validation
-            if (assessment.YearsOfSmoking <= 0 || string.IsNullOrEmpty(assessment.YearsOfSmoking.ToString()) || string.IsNullOrEmpty(assessment.YearMonth)
+            if (assessment.DurationOfSmoking <= 0 || string.IsNullOrEmpty(assessment.DurationOfSmoking.ToString()) || string.IsNullOrEmpty(assessment.YearMonth)
                 )
             {
                 await Application.Current.MainPage.DisplayAlert("Required", "Please enter how long you’ve been smoking.", "OK");
@@ -248,7 +247,7 @@ namespace Unsmoke.MVVM.ViewModel
                 {
                     DateTaken = Assessment.DateTaken = DateTime.UtcNow,
                     Gender = Assessment.Gender,
-                    YearsOfSmoking = Assessment.YearsOfSmoking,
+                    YearsOfSmoking = Assessment.DurationOfSmoking,
                     YearMonth = Assessment.YearMonth,
                     CigarettesPerDay = Assessment.CigarettesPerDay,
                     CigaretteCost = Assessment.CigaretteCost,
@@ -268,6 +267,7 @@ namespace Unsmoke.MVVM.ViewModel
             return;
         }
 
+        private int currentIndex = 1;
 
         private async void ShowNext()
         {
@@ -413,8 +413,8 @@ namespace Unsmoke.MVVM.ViewModel
         {
             // Calculate total days based on whether the user chose Years or Months
             double daysSmoked = Assessment.YearMonth == "Years"
-                ? Assessment.YearsOfSmoking * 365
-                : Assessment.YearsOfSmoking * 30;  // Approximation for months
+                ? Assessment.DurationOfSmoking * 365
+                : Assessment.DurationOfSmoking * 30;  // Approximation for months
 
             // Daily cost
             double dailyCost = Assessment.CigarettesPerDay * Assessment.CigaretteCost;
@@ -435,7 +435,7 @@ namespace Unsmoke.MVVM.ViewModel
 
             // Build the summary message
             SummaryMessage = $"Gender: {Assessment.Gender}\n" +
-                             $"Years of Smoking: {Assessment.YearsOfSmoking} {Assessment.YearMonth}\n" +
+                             $"Years of Smoking: {Assessment.DurationOfSmoking} {Assessment.YearMonth}\n" +
                              $"Cigarettes/Day: {Assessment.CigarettesPerDay}\n" +
                              $"Cost per Pack: {Assessment.CigaretteCost.ToString("C", pesoCulture)}\n" +
                              $"Money Spent: {_savings.totalSaved.ToString("C", pesoCulture)}\n" +

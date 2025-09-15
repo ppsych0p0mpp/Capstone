@@ -4,7 +4,7 @@
              x:Class="Unsmoke.MVVM.Views.Community"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
              Title="Community"
-             >
+             BackgroundColor="#faf9f6">
 
     <ContentPage.BindingContext>
         <vm:CommunityVm/>
@@ -43,8 +43,9 @@
                         <Button VerticalOptions="End"
                                 Text="Create Post"
                                 Margin="20,40"
-                                CornerRadius="30"
+                                CornerRadius="15"
                                 FontSize="20"
+                                FontAttributes="Bold"
                                 TextColor="Black"
                                 BackgroundColor="#FFC000"
                                 Command="{Binding GotoCreatePost}"/>
@@ -56,25 +57,78 @@
                 <Label Text="Community Feed"
                        Margin="20"/>
                 <CollectionView ItemsSource="{Binding Posts}"
-                                HeightRequest="500">
+                                HeightRequest="500"
+                                x:Name="PostCollectionView"
+                                >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border Stroke="Black" StrokeThickness="1" Margin="0"
-                                    BackgroundColor="White"
-                                    VerticalOptions="Center"
-                                    WidthRequest="370"
-                                    HeightRequest="200">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="10"/>
-                                </Border.StrokeShape>
+                            <SwipeView>
                                 
-                                <VerticalStackLayout Padding="10">
-                                    <Label Text="{Binding Tags}" FontSize="12" TextColor="Black"/>
-                                    <Label Text="Hello" FontSize="30"/>
-                                    <Label Text="{Binding Content}" FontSize="30" TextColor="Gray"
-                                           VerticalOptions="Center"/>
-                                </VerticalStackLayout>
-                            </Border>
+                                    <Border Stroke="Black" StrokeThickness="1" Margin="5"
+                                        BackgroundColor="White"
+                                        VerticalOptions="Center"
+                                        WidthRequest="370"
+                                        HeightRequest="250">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10"/>
+                                    </Border.StrokeShape>
+                                
+                                    <VerticalStackLayout>
+                                        <Label Margin="80,20,0,0">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="FirstName"/>
+                                                    <Span Text=" "/>
+                                                    <Span Text="LastName"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                        <ImageButton Source="dot.svg"
+                                                     HeightRequest="30"
+                                                     WidthRequest="50"
+                                                     Margin="320,-20,0,0"
+                                                     Command="{Binding BindingContext.ShowEditDeleteAction, Source={x:Reference PostCollectionView}}"/>
+                                        <Border HeightRequest="80"
+                                                WidthRequest="100"
+                                                Margin="200,-40,0,0"
+                                                IsVisible="{Binding BindingContext.ShowEditDelete, Source={x:Reference PostCollectionView}}">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="20"/>
+                                            </Border.StrokeShape>
+                                                <VerticalStackLayout VerticalOptions="Center"
+                                                                 HorizontalOptions="Center"
+                                                                 Spacing="10">
+                                                <Label Text="Edit"
+                                                       Margin="32,0,0,0">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding BindingContext.EditPostCommand, Source={x:Reference PostCollectionView}}"
+                                                                              CommandParameter="{Binding .}"/>
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                                <Border WidthRequest="90"></Border>
+                                                <Label Text="Delete"
+                                                       Margin="25,0,0,0">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding BindingContext.DeletePostCommand, Source={x:Reference PostCollectionView}}"
+                                                                              CommandParameter="{Binding .}"/>
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                        <Label Text="{Binding DateCreated}"
+                                               Margin="80,-5,0,0"
+                                               FontSize="10"/>
+                                        <Label/>
+                                        <Label Text="{Binding Tags}"
+                                               Margin="30,0,0,0"/>
+
+                                        <Label Text="{Binding Content}"
+                                               Margin="30,10,0,0"
+                                               FontSize="16"
+                                               LineBreakMode="WordWrap"/>
+                                    </VerticalStackLayout>
+                                </Border>
+                           </SwipeView>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

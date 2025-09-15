@@ -5,8 +5,10 @@
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
              Shell.NavBarIsVisible="False"
              NavigationPage.HasNavigationBar="False"
+             Title="Dashboard"
              Shell.FlyoutBehavior="Flyout"
-             Title="Dashboard">
+             BackgroundColor="#f3f3f3"
+             >
     
     <ContentPage.BindingContext>
         <vm:DashboardViewModel/>
@@ -36,7 +38,7 @@
                 <Label Text="Profile" Grid.Column="2" HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
             </Grid>
 
-            <Frame Grid.Row="1" BackgroundColor="#373737" HeightRequest="150" WidthRequest="355" Margin="20" CornerRadius="44" BorderColor="Transparent">
+            <Frame Grid.Row="1" BackgroundColor="#373737" HeightRequest="150" WidthRequest="355" Margin="20" CornerRadius="26" BorderColor="Transparent">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height=".5*"/>
@@ -57,7 +59,7 @@
             <!--Progress Time-->
             <Label Text="My Progress" TextColor="Black" Grid.Row="2" Margin="20,0,0,0"/>
 
-            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,40" BackgroundColor="#FE8400" CornerRadius="26" BorderColor="Transparent">
+            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,40" BackgroundColor="#FFC000" CornerRadius="26" BorderColor="Transparent">
                 <Grid>
                     <Label Text="Time without a cigarette" Margin="80,0,10,0"/>
                     
@@ -89,7 +91,7 @@
                         <Grid>
                             <Label Text="Cigarettes&#10;  Avoided" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,15" FontSize="14"/>
                             <Image Source="cigarette" HeightRequest="50" Margin="0,0,0,0"/>
-                            <Label Text="0"
+                            <Label Text="{Binding Data.CigarettedAvoided}"
                                    VerticalOptions="End"
                                    Margin="43,0,0,10"
                                    FontSize="25"

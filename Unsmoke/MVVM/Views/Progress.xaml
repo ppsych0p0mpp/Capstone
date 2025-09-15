@@ -42,74 +42,84 @@
             <Border HeightRequest="250" BackgroundColor="#2E2E2E" WidthRequest="370"
                     Grid.Row="1"
                     Margin="40,70,40,0"
-                    StrokeShape="RoundRectangle 20">
-                
-                
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Text="You could have bought"
+                    StrokeShape="RoundRectangle 20"
+                    IsVisible="{Binding Itemcomp}">
+                <VerticalStackLayout>
+                    <Label Text="You could have bought a"
                            TextColor="White"
-                           Margin="20"/>
+                           Margin="20"
+                           HorizontalOptions="Center"
+                           FontAttributes="Bold"/>
                     <Image Source="dotnet_bot"
                            HeightRequest="100"
-                           VerticalOptions="Center"/>
-                    <Button Text="Add Image"
-                            HeightRequest="50"
+                           HorizontalOptions="Center"
+                           Margin="-200,0,0,0"/>
+                    <Button Text="Confirm"
+                            TextColor="Black"
+                            HeightRequest="40"
                             WidthRequest="100"
                             VerticalOptions="End"
-                            Margin="10"/>
-                    <Border>
-                    </Border>
-                    <Border Grid.Column="1" Stroke="White"
-                            Margin="10,-100,0,0"
+                            Margin="-200,20,0,0"
+                            BackgroundColor="#FFC000"
+                            Command="{Binding AddItemCommand}"/>
+                    
+                    <Border Stroke="White"
+                            Margin="180,-160,0,0"
                             HeightRequest="50"
                             WidthRequest="150"
-                             >
-                        <Grid>
-                            <Entry Placeholder="NAME"
-                                   PlaceholderColor="White"
-                                   TextColor="White"
-                                   FontSize="16"
-                                   HorizontalTextAlignment="Center"/>
-                        </Grid>
-                    </Border>
-                    <Border Grid.Column="1" Stroke="White"
-                            Margin="10,30,0,0"
-                            HeightRequest="50"
                             >
-                        <Grid>
-                            <Entry Placeholder="PRICE"
-                                   PlaceholderColor="White"
-                                   TextColor="White"
-                                   FontSize="16"
-                                   HorizontalTextAlignment="Center"/>
-                        </Grid>
+
+                        <Entry Placeholder="NAME"
+                               PlaceholderColor="White"
+                               TextColor="Black"
+                               FontSize="16"
+                               HorizontalTextAlignment="Center"
+                               HeightRequest="90"
+                               BackgroundColor="DarkGray"
+                               Text="{Binding ItemName, Mode=TwoWay}"/>
+
                     </Border>
 
-                    <Border Grid.Column="1" Stroke="Transparent"
-                            Margin="10,200,0,0"
-                            HeightRequest="30"
-        >
-                        <Grid>
-                            <Label Grid.Column="1"
-                                   Text="Click to show Progress"
-                                   TextColor="White"
-                                   HorizontalOptions="Center"/>
-                        </Grid>
+                    <Border Stroke="White"
+                            HeightRequest="50"
+                            WidthRequest="150"
+                            Margin="180,20,0,0">
+                            <Entry Placeholder="PRICE"
+                                   PlaceholderColor="White"
+                                   TextColor="Black"
+                                   FontSize="16"
+                                   HorizontalTextAlignment="Center"
+                                   HeightRequest="90"
+                                   BackgroundColor="DarkGray"
+                                   Keyboard="Numeric"
+                                   Text="{Binding ItemPrice, Mode=TwoWay}"/>
                     </Border>
-                </Grid>
+
+                    <Label Margin="180,20,0,0"
+                           Text="Click to show Progress"
+                           TextColor="White"
+                           HorizontalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ShowProgress}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+
+
+                </VerticalStackLayout>
+                
+               
             </Border>
 
             <!--Click Show Savings-->
             <Border StrokeThickness="0"
                     BackgroundColor="#2E2E2E"
                     Padding="15"
-                    Margin="23,20,23,0"
-                    Grid.Row="2"
-                    HeightRequest="250">
+                    Margin="40,70,40,0"
+                    Grid.Row="1"
+                    HeightRequest="250"
+                    WidthRequest="370"
+                    IsVisible="{Binding Showprog}">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="20"/>
                 </Border.StrokeShape>
@@ -117,15 +127,21 @@
                     <VerticalStackLayout Spacing="15">
                     <!-- Total Saved Header -->
                     <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                        <Image Source="savings_icon.png" HeightRequest="30" WidthRequest="30"/>
+                        <Image Source="peso" HeightRequest="50" WidthRequest="50"/>
                         <VerticalStackLayout>
                             <Label Text="₱750"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       TextColor="White"/>
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
                             <Label Text="Total Saved"
-                       FontSize="12"
-                       TextColor="#BDBDBD"/>
+                                   FontSize="12"
+                                   TextColor="#BDBDBD"/>
+                            <ImageButton Source="dotnet_bot"
+                                         HorizontalOptions="End"
+                                         WidthRequest="50"
+                                         HeightRequest="50"
+                                         Margin="230,-60,0,0"
+                                         Command="{Binding ItemComp}"/>
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 

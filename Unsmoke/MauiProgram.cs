@@ -25,6 +25,8 @@ namespace Unsmoke
             builder.Services.AddSingleton<Progress>();
             builder.Services.AddSingleton<CreatePost>();
             builder.Services.AddSingleton<Community>();
+            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<RegisterPage>();
             return builder.Build();
         }
     }

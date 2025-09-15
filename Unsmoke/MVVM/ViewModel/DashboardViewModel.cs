@@ -104,15 +104,7 @@ namespace Unsmoke.MVVM.ViewModel
             OnPropertyChanged(nameof(ElapsedFormatted));
         }
 
-        // Function to calculate cigarettes avoided if time without cigarette exceeds 24 hours
-        //private void CalculateCigarettesAvoided()
-        //{
-        //    if (timewithoutCigarette.Seconds >= 10)
-        //    {
-        //        Data.CigarettedAvoided++;
-        //        OnPropertyChanged(nameof(Data.CigarettedAvoided));
-        //    }
-        //}
+        
 
 
 

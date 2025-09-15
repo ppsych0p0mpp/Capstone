@@ -19,6 +19,6 @@ namespace Unsmoke.MVVM.Models
 
         public DateTime DateCreated { get; set; }
 
-        
+        public bool IsDeleted { get; set; }   // For soft deletion
     }
 }
