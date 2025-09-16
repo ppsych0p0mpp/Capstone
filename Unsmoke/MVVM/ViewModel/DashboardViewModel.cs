@@ -56,7 +56,7 @@ namespace Unsmoke.MVVM.ViewModel
 
             AddCigarette = new RelayCommand(AddCigaretteAction);
             MinusCigarette = new RelayCommand(MinusCigaretteAction);
-            LoadDashboardDataCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
+            //LoadDashboardDataCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
 
             // MAUI timer
             _timer = Application.Current!.Dispatcher.CreateTimer();
@@ -77,25 +77,25 @@ namespace Unsmoke.MVVM.ViewModel
         public string Minutes => Data.TimewithoutCig.Minutes.ToString("00");
         public string Seconds => Data.TimewithoutCig.Seconds.ToString("00");
 
-        private async Task LoadDashboardDataAsync()
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(_assessmentDocId)) return;
+        //private async Task LoadDashboardDataAsync()
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(_assessmentDocId)) return;
 
-                var data = await _firestoreService.GetDocumentsAsync<DashboardData>("DashboardStats", _assessmentDocId);
-                if (data != null)
-                {
-                    Data = data;
-                    lastSmokeTime = data.QuitDate; // or saved LastSmokeTime
-                    RaiseElapsedChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading dashboard: {ex.Message}");
-            }
-        }
+        //        var data = await _firestoreService.GetDocumentsAsync<DashboardData>("DashboardStats", _assessmentDocId);
+        //        if (data != null)
+        //        {
+        //            Data = data;
+        //            lastSmokeTime = data.QuitDate; // or saved LastSmokeTime
+        //            RaiseElapsedChanges();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error loading dashboard: {ex.Message}");
+        //    }
+        //}
         private async Task SaveDashboardDataAsync()
         {
             try

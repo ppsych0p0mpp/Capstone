@@ -63,7 +63,7 @@
                            HorizontalOptions="Start"
                            VerticalOptions="Start">
                         <Image Source="{Binding Image}" 
-                                   Aspect="AspectFill"
+                                   Aspect="AspectFit"
                                    WidthRequest="100"
                                    HeightRequest="150">
                             <Image.GestureRecognizers>

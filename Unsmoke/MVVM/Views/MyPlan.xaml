@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Unsmoke.MVVM.Views.MyPlan"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
              Title="MyPlan"
              BackgroundColor="#faf9f6">
@@ -42,64 +43,248 @@
                            FontAttributes="Bold"
                            Margin="80,-45,0,0"
                            />
-                    <Border WidthRequest="330"
-                            Margin="0,35,0,0"
-                            HeightRequest="90"
-                            Stroke="Transparent"
-                            BackgroundColor="#FCC000">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="15"/>
-                        </Border.StrokeShape>
-                    </Border>
-                </VerticalStackLayout>
+                        <Border WidthRequest="330"
+                                Margin="20,20,20,0"
+                                Padding="15"
+                                Stroke="Transparent"
+                                BackgroundColor="#FCC000"
+                                HorizontalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="15"/>
+                            </Border.StrokeShape>
+                            <VerticalStackLayout>
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Image Source="bulb.png"
+                                           WidthRequest="20"
+                                           HeightRequest="20"
+                                           VerticalOptions="Center"
+                                           Grid.Column="0"/>
+                                    <Label Text="Today's Tip"
+                                           TextColor="Black"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           Grid.Column="1"
+                                           Margin="5,0,0,0"/>
+                                </Grid>
+                                <Label Text="{Binding TipOfTheDay}"
+                                       TextColor="Black"
+                                       FontSize="14"
+                                       FontAttributes="None"
+                                       Margin="0,10,0,0"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
             </Border>
 
             <Label Text="Education Resources"
                    Margin="20,10,0,0"/>
-            
-            
-            <!--Educational resources-->
-            <VerticalStackLayout Spacing="10">
-                <ListView ItemsSource="{Binding Resources}" HasUnevenRows="True" SeparatorVisibility="Default"
-                          WidthRequest="370" x:Name="Educational" ItemTapped="OnItemTapped"
-                          BackgroundColor="Transparent"
-                          >
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Border WidthRequest="300"
-                                        HeightRequest="100"
-                                        BackgroundColor="#2E2E2E"
-                                        Margin="0,0,0,0">
-                                    <Border.Shadow>
-                                        <Shadow Brush="Black"
-                                                Offset="10,10"
-                                                Radius="10"
-                                                Opacity="0.5"/>
-                                    </Border.Shadow>
-                                    <StackLayout Spacing="20">
-                                        <!-- Title -->
-                                        <Label Text="{Binding Title}" 
-                                               FontAttributes="Bold" 
-                                               FontSize="20"
-                                               TextColor="White">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer 
-                                                        Command="{Binding Source={x:Reference Educational}, Path=BindingContext.OpenLinkCommand}"
-                                                        CommandParameter="{Binding Url}" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                        <Label Text="{Binding Description}" FontSize="13" TextColor="White"
-                                               LineBreakMode="WordWrap"/>
-                                    </StackLayout>
-                                </Border>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </VerticalStackLayout>
 
-        </VerticalStackLayout>
+
+                <!--Educational Management-->
+                <CollectionView ItemsSource="{Binding Resources}"
+                                SelectionMode="None"
+                                Margin="0,20,0,0">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="1"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Stroke="Transparent"
+                                    BackgroundColor="White"
+                                    Padding="0"
+                                    WidthRequest="370"
+                                    Margin="0,0,0,5">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12"/>
+                                </Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black"
+                                            Offset="5,5"
+                                            Radius="100"
+                                            Opacity=".2"/>
+                                </Border.Shadow>
+
+                                <toolkit:Expander>
+                                    <toolkit:Expander.Header>
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              Padding="10"
+                                              BackgroundColor="Transparent"
+                                              HeightRequest="80">
+                                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="0">
+                                                <Image Source="{Binding Icon}" WidthRequest="30" HeightRequest="30"/>
+                                                <Label Text="{Binding Title}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16"
+                                                       LineBreakMode="WordWrap"
+                                                       MaxLines="2"
+                                                       HorizontalOptions="StartAndExpand"
+                                                       VerticalOptions="Center"
+                                                       TextColor="Black"/>
+                                            </StackLayout>
+
+                                            <Image x:Name="ArrowIcon"
+                                                   Grid.Column="1"
+                                                   Source="arrowwhite.svg"
+                                                   WidthRequest="20"
+                                                   HeightRequest="20"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="End">
+                                                <Image.Triggers>
+                                                    <DataTrigger TargetType="Image"
+                                                                 Binding="{Binding Source={RelativeSource AncestorType={x:Type toolkit:Expander}}, Path=IsExpanded}"
+                                                                 Value="True">
+                                                        <Setter Property="Rotation" Value="180"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Image"
+                                                                 Binding="{Binding Source={RelativeSource AncestorType={x:Type toolkit:Expander}}, Path=IsExpanded}"
+                                                                 Value="False">
+                                                        <Setter Property="Rotation" Value="0"/>
+                                                    </DataTrigger>
+                                                </Image.Triggers>
+                                            </Image>
+                                        </Grid>
+                                    </toolkit:Expander.Header>
+
+                                    <toolkit:Expander.Content>
+                                        <StackLayout BackgroundColor="White" Padding="10">
+                                            <Label Text="{Binding Description}"
+                                                   FontSize="14"
+                                                   TextColor="Black"
+                                                   LineBreakMode="WordWrap"/>
+
+                                            <Label Text="Open Resource"
+                                                   TextColor="#FCC000"
+                                                   FontAttributes="Bold">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                            Command="{Binding Source={x:Reference Educational}, Path=BindingContext.OpenLinkCommand}"
+                                                            CommandParameter="{Binding Url}" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </StackLayout>
+                                    </toolkit:Expander.Content>
+                                </toolkit:Expander>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!--Withdrawal Management-->
+
+                <Label TextColor="Black" Text="Withdrawal Management"
+                        Margin="20,10,0,0"/>
+                <CollectionView ItemsSource="{Binding WithdrawalTips}"
+                               SelectionMode="None"
+                               Margin="0,20,0,0">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="1"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Stroke="Transparent"
+                                       BackgroundColor="White"
+                                       Padding="0"
+                                       WidthRequest="370"
+                                       Margin="0,0,0,5">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12"/>
+                                </Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black"
+                                             Offset="5,5"
+                                             Radius="100"
+                                             Opacity=".2"/>
+                                </Border.Shadow>
+                                <toolkit:Expander>
+                                    <toolkit:Expander.Header>
+                                        <Grid ColumnDefinitions="*,Auto"
+                                                 Padding="10"
+                                                 BackgroundColor="#2E2E2E"
+                                                 HeightRequest="80">
+                                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="0">
+                                                <Frame BackgroundColor="#FFC000"
+                                                        Padding="8"
+                                                        CornerRadius="20"
+                                                        HeightRequest="36"
+                                                        WidthRequest="36"
+                                                        HasShadow="False"
+                                                        VerticalOptions="Center"
+                                                        HorizontalOptions="Center">
+                                                    <Image Source="{Binding Icon}"
+                                                            HeightRequest="20"
+                                                            WidthRequest="20"
+                                                            VerticalOptions="Center"
+                                                            HorizontalOptions="Center"/>
+                                                </Frame>
+                                                <Label Text="{Binding Title}"
+                                                      FontAttributes="Bold"
+                                                      FontSize="16"
+                                                      LineBreakMode="WordWrap"
+                                                      MaxLines="2"
+                                                      HorizontalOptions="StartAndExpand"
+                                                      VerticalOptions="Center"
+                                                      TextColor="White"/>
+                                            </StackLayout>
+
+                                            <Image x:Name="ArrowIcon"
+                                                      Grid.Column="1"
+                                                      Source="arrowyellow.svg"
+                                                      WidthRequest="20"
+                                                      HeightRequest="20"
+                                                      VerticalOptions="Center"
+                                                      HorizontalOptions="End">
+                                                <Image.Triggers>
+                                                    <DataTrigger TargetType="Image"
+                                                                    Binding="{Binding Source={RelativeSource AncestorType={x:Type toolkit:Expander}}, Path=IsExpanded}"
+                                                                    Value="True">
+                                                        <Setter Property="Rotation" Value="180"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Image"
+                                                                    Binding="{Binding Source={RelativeSource AncestorType={x:Type toolkit:Expander}}, Path=IsExpanded}"
+                                                                    Value="False">
+                                                        <Setter Property="Rotation" Value="0"/>
+                                                    </DataTrigger>
+                                                </Image.Triggers>
+                                            </Image>
+                                        </Grid>
+                                    </toolkit:Expander.Header>
+
+                                    <toolkit:Expander.Content>
+                                        <ListView ItemsSource="{Binding Tips}"
+                                                   HasUnevenRows="True"
+                                                   SeparatorVisibility="None"
+                                                   BackgroundColor="#2E2E2E"
+                                                   Margin="0"
+                                                   HeightRequest="150" >
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ViewCell>
+                                                        <Frame BackgroundColor="#444"
+                                                                CornerRadius="10"
+                                                                Padding="3"
+                                                                Margin="5,2">
+                                                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                                                <Label Text="●" TextColor="#FFC000" VerticalOptions="Center" />
+                                                                <Label Text="{Binding .}" TextColor="White" VerticalOptions="Center" />
+                                                            </StackLayout>
+                                                        </Frame>
+                                                    </ViewCell>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+
+                                        </ListView>
+                                    </toolkit:Expander.Content>
+                                </toolkit:Expander>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+
+
+            </VerticalStackLayout>
         </ScrollView>
     </Grid>
 </ContentPage>
