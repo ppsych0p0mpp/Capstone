@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json.Linq;
 using Unsmoke.Service;
+using Unsmoke.Helper;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -84,6 +85,15 @@ namespace Unsmoke.MVVM.ViewModel
         //function for Soft Deletion the post 
         private async Task DeletePostAsync(Post post)
         {
+            if (!SessionManager.IsLoggedIn)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "You need to log in before deleting a post.",
+                    "OK");
+                return;
+            }
+
             if (post == null) return;
 
             // Ask user to confirm deletion
@@ -109,6 +119,14 @@ namespace Unsmoke.MVVM.ViewModel
         //function when Edit
         private async Task EditPostAsync(Post post)
         {
+            if (!SessionManager.IsLoggedIn)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "You need to log in before editing a post.",
+                    "OK");
+                return;
+            }
             if (post == null) return;
 
             // Navigate to edit page with post data
@@ -122,10 +140,19 @@ namespace Unsmoke.MVVM.ViewModel
         
         private async void Addpost()
         {
+            if (!SessionManager.IsLoggedIn)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "You need to log in or register before creating a post.",
+                    "OK");
+                return;
+            }
             Application.Current.MainPage = App.Services.GetRequiredService<CreatePost>();
             return;
         }
         
+        //Add funtion if the user is not login/register validation will show 
         
     }
 }

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Unsmoke.MVVM.Views.Progress"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
-             Title="Progress">
+             Title="Progress"
+             x:Name="ItemsPage">
 
     <ContentPage.BindingContext>
         <vm:ProgressVM/>
@@ -35,9 +36,9 @@
 
             <!--Item Comparison-->
             <Label Text="Item Comparison"
-                   Margin="20,20,0,0"
+                   Margin="20,40,0,0"
                    Grid.Row="1"
-                   FontSize="20"/>
+                   FontSize="15"/>
 
             <Border HeightRequest="250" BackgroundColor="#2E2E2E" WidthRequest="370"
                     Grid.Row="1"
@@ -45,15 +46,31 @@
                     StrokeShape="RoundRectangle 20"
                     IsVisible="{Binding Itemcomp}">
                 <VerticalStackLayout>
-                    <Label Text="You could have bought a"
+                    <Label Text="You could have bought a.."
                            TextColor="White"
                            Margin="20"
                            HorizontalOptions="Center"
                            FontAttributes="Bold"/>
-                    <Image Source="dotnet_bot"
+                    <!-- Clickable Image -->
+                    <Frame WidthRequest="100"
                            HeightRequest="100"
-                           HorizontalOptions="Center"
-                           Margin="-200,0,0,0"/>
+                           CornerRadius="10"
+                           Margin="32,0,0,0"
+                           Padding="0"
+                           HasShadow="False"
+                           BorderColor="LightGray"
+                           BackgroundColor="White"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Start">
+                        <Image Source="{Binding Image}" 
+                                   Aspect="AspectFill"
+                                   WidthRequest="100"
+                                   HeightRequest="150">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference ItemsPage}, Path=BindingContext.PickImageCommand}" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Frame>
                     <Button Text="Confirm"
                             TextColor="Black"
                             HeightRequest="40"
@@ -136,11 +153,11 @@
                             <Label Text="Total Saved"
                                    FontSize="12"
                                    TextColor="#BDBDBD"/>
-                            <ImageButton Source="dotnet_bot"
+                            <ImageButton Source="close"
                                          HorizontalOptions="End"
-                                         WidthRequest="50"
+                                         WidthRequest="20"
                                          HeightRequest="50"
-                                         Margin="230,-60,0,0"
+                                         Margin="250,-60,0,0"
                                          Command="{Binding ItemComp}"/>
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
@@ -170,10 +187,10 @@
 
 
             <!--Milestone -->
-            <Label Text="Milestone Achieved"
+            <Label Text="Achievement Board"
                    Grid.Row="3" Margin="20,20,0,0"
                    TextColor="Black"
-                   FontSize="20"
+                   FontSize="15"
                    />
             
             <CollectionView Grid.Row="3"
@@ -188,8 +205,8 @@
   
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border StrokeThickness="0"
-                                Stroke="Black"
+                        <Border StrokeThickness="1"
+                                Stroke="#ffc000"
                                 Margin="5"
                                 Padding="10"
                                 HeightRequest="100"
@@ -198,6 +215,7 @@
                                 <RoundRectangle CornerRadius="20"/>
                             </Border.StrokeShape>
                             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                                <Image Source="{Binding Icon}"/>
                                 <Label Text="{Binding Title}" 
                                        FontAttributes="Bold" 
                                        FontSize="16"

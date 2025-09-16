@@ -10,6 +10,7 @@ using Unsmoke.MVVM.Views;
 using Unsmoke.MVVM.Models;
 using Unsmoke.Service;
 using Newtonsoft.Json.Linq;
+using Unsmoke.Helper;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -35,7 +36,13 @@ namespace Unsmoke.MVVM.ViewModel
             TogglePassword = new RelayCommand(TogglePasswordVisibility);
             _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
             LoginCommand = new AsyncRelayCommand(LoginAsync);
+
+            
+
+
         }
+
+
 
         public async void RegisterPage()
         {
@@ -83,6 +90,13 @@ namespace Unsmoke.MVVM.ViewModel
                         // Verify password hash
                         if (VerifyPassword(user.Password, passwordHash))
                         {
+                            SessionManager.CurrentUser = new Users
+                            {
+                                UserID = user.UserID, // you'll get this from Firestore data
+                                FullName = User.FullName,
+                                Username = User.Username
+                            };
+
                             await Application.Current.MainPage.DisplayAlert("Success", "Login successful!", "OK");
                             Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
                             return;

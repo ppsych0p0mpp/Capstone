@@ -85,6 +85,9 @@
 	  <MauiXaml Update="MVVM\Views\MyPlan.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="MVVM\Views\ProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="MVVM\Views\Progress.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

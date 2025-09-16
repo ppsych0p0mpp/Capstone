@@ -35,22 +35,27 @@ namespace Unsmoke.MVVM.ViewModel
         [ObservableProperty]
         private string itemPrice;  // Bound to Entry PRICE
 
+        [ObservableProperty]
+        private string image = "add.svg";
+
+
         //Commands
         public ICommand ShowProgress { get; }
         public ICommand ItemComp { get; }
         public ICommand AddItemCommand { get; }
+        public ICommand PickImageCommand { get; }
 
         //Constructor
         public ProgressVM()
         {
             Achievements = new ObservableCollection<Achievement>
                 {
-                    new Achievement { Title = "First Day", Description = "24 hours smoke-free", Icon = "firstday.png", IsUnlocked = true },
-                    new Achievement { Title = "Money Saver", Description = "Saved ₱100", Icon = "moneysaver.png", IsUnlocked = true },
-                    new Achievement { Title = "Health Hero", Description = "3 days clean", Icon = "healthhero.png", IsUnlocked = true },
-                    new Achievement { Title = "Week Warrior", Description = "7 days smoke-free", Icon = "weekwarrior.png", IsUnlocked = false },
-                    new Achievement { Title = "Strong Lungs", Description = "2 weeks clean", Icon = "lungs.png", IsUnlocked = false },
-                    new Achievement { Title = "Champion", Description = "30 days milestone", Icon = "champion.png", IsUnlocked = false },
+                    new Achievement { Title = "First Day", Description = "24 hours smoke-free", Icon = "unlock", IsUnlocked = false },
+                    new Achievement { Title = "Money Saver", Description = "Saved ₱100", Icon = "unlock", IsUnlocked = false },
+                    new Achievement { Title = "Health Hero", Description = "3 days clean", Icon = "unlock", IsUnlocked = false },
+                    new Achievement { Title = "Week Warrior", Description = "7 days smoke-free", Icon = "unlock", IsUnlocked = false },
+                    new Achievement { Title = "Strong Lungs", Description = "2 weeks clean", Icon = "unlock", IsUnlocked = false },
+                    new Achievement { Title = "Champion", Description = "30 days milestone", Icon = "unlock", IsUnlocked = false },
                     // Add the rest of your achievements here...
                 };
 
@@ -58,6 +63,7 @@ namespace Unsmoke.MVVM.ViewModel
             ShowProgress = new RelayCommand(Progress);
             ItemComp = new RelayCommand(ShowItemComparison);
             AddItemCommand = new AsyncRelayCommand(AddItemAsync);
+            PickImageCommand = new AsyncRelayCommand(PickImageAsync);
         }
 
         private int index = 1;
@@ -72,6 +78,26 @@ namespace Unsmoke.MVVM.ViewModel
         {
             Showprog = false;
             Itemcomp = true;
+        }
+        private async Task PickImageAsync()
+        {
+            try
+            {
+                var result = await FilePicker.PickAsync(new PickOptions
+                {
+                    FileTypes = FilePickerFileType.Images,
+                    PickerTitle = "Select an Image"
+                });
+
+                if (result != null)
+                {
+                    Image = result.FullPath; // Set new image from device
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Image selection failed: {ex.Message}", "OK");
+            }
         }
 
         // ADD ITEM FUNCTION
@@ -94,7 +120,8 @@ namespace Unsmoke.MVVM.ViewModel
             var newItem = new Item
             {
                 ItemName = ItemName,
-                ItemPrice = price
+                ItemPrice = price,
+                Image = image // Placeholder, implement image handling as needed
             };
 
             // Save to Firestore
@@ -105,5 +132,7 @@ namespace Unsmoke.MVVM.ViewModel
 
             await Application.Current.MainPage.DisplayAlert("Success", "Item Added!", "OK");
         }
+
+        //Add Image
     }
 }
