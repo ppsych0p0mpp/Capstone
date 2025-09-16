@@ -2,11 +2,104 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Unsmoke.MVVM.Views.MyPlan"
-             Title="MyPlan">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
+             Title="MyPlan"
+             BackgroundColor="#faf9f6">
+
+    <ContentPage.BindingContext>
+        <vm:MyPlanVM/>
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <ScrollView>
+        <VerticalStackLayout>
+            <HorizontalStackLayout Spacing="120">
+                <Border  Background="Black" HeightRequest="50" Stroke="Black" StrokeThickness="2">
+                    <Label Text="Burger" Grid.Column="0"
+                HorizontalOptions="Start"/>
+                </Border>
+                <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
+            />
+                <Label Text="Profile"  HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
+            </HorizontalStackLayout>
+            <Border Stroke="Black"
+                    HeightRequest="200"
+                    WidthRequest="370"
+                    Margin="20"
+                    BackgroundColor="#2E2E2E">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30"/>
+                </Border.StrokeShape>
+                <VerticalStackLayout>
+                    <Image Source="book"
+                           WidthRequest="50"
+                           HeightRequest="50"
+                           HorizontalOptions="Start"
+                           Margin="20,20,0,0"/>
+                    <Label Text="Your Quit Plan"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           Margin="80,-45,0,0"
+                           />
+                    <Border WidthRequest="330"
+                            Margin="0,35,0,0"
+                            HeightRequest="90"
+                            Stroke="Transparent"
+                            BackgroundColor="#FCC000">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15"/>
+                        </Border.StrokeShape>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Education Resources"
+                   Margin="20,10,0,0"/>
+            
+            
+            <!--Educational resources-->
+            <VerticalStackLayout Spacing="10">
+                <ListView ItemsSource="{Binding Resources}" HasUnevenRows="True" SeparatorVisibility="Default"
+                          WidthRequest="370" x:Name="Educational" ItemTapped="OnItemTapped"
+                          BackgroundColor="Transparent"
+                          >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Border WidthRequest="300"
+                                        HeightRequest="100"
+                                        BackgroundColor="#2E2E2E"
+                                        Margin="0,0,0,0">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black"
+                                                Offset="10,10"
+                                                Radius="10"
+                                                Opacity="0.5"/>
+                                    </Border.Shadow>
+                                    <StackLayout Spacing="20">
+                                        <!-- Title -->
+                                        <Label Text="{Binding Title}" 
+                                               FontAttributes="Bold" 
+                                               FontSize="20"
+                                               TextColor="White">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer 
+                                                        Command="{Binding Source={x:Reference Educational}, Path=BindingContext.OpenLinkCommand}"
+                                                        CommandParameter="{Binding Url}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Label Text="{Binding Description}" FontSize="13" TextColor="White"
+                                               LineBreakMode="WordWrap"/>
+                                    </StackLayout>
+                                </Border>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

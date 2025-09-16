@@ -60,10 +60,9 @@
                                 HeightRequest="500"
                                 x:Name="PostCollectionView"
                                 >
+                    
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <SwipeView>
-                                
                                     <Border Stroke="Black" StrokeThickness="1" Margin="5"
                                         BackgroundColor="White"
                                         VerticalOptions="Center"
@@ -72,7 +71,13 @@
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="10"/>
                                     </Border.StrokeShape>
-                                
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black"
+                                            Offset="10,10"
+                                            Radius="10"
+                                            Opacity="0.5"/>
+                                    </Border.Shadow>
+
                                     <VerticalStackLayout>
                                         <Label Margin="80,20,0,0">
                                             <Label.FormattedText>
@@ -128,7 +133,6 @@
                                                LineBreakMode="WordWrap"/>
                                     </VerticalStackLayout>
                                 </Border>
-                           </SwipeView>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
