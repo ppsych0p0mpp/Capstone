@@ -143,9 +143,9 @@ namespace Unsmoke.MVVM.ViewModel
         {
             ConfidenceIcons = new ObservableCollection<ConfidenceIcon>
             {
-                new ConfidenceIcon { Icon = "sad_full.png", Text = "Not Confident" },
-                new ConfidenceIcon { Icon = "poker_full.png", Text = "Somewhat Confident" },
-                new ConfidenceIcon { Icon = "happy_full.png", Text = "Very Confident" }
+                new ConfidenceIcon { Icon = "sad.svg", Text = "Not Confident" },
+                new ConfidenceIcon { Icon = "confused.svg", Text = "Somewhat Confident" },
+                new ConfidenceIcon { Icon = "happy.svg", Text = "Very Confident" }
             };
             SelectedConfidenceIndex = 1; // Default to middle
 

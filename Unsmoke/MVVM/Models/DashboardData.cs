@@ -18,6 +18,7 @@ namespace Unsmoke.MVVM.Models
         public DateTime QuitDate { get; set; }
 
         //Statistics
+        public TimeSpan TimewithoutCig { get; set; }
         public int CigarettedAvoided { get; set; }
         public double MoneySaved { get; set; }
         public double LifeTimeSaved { get; set; }

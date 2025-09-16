@@ -5,7 +5,7 @@
              Title="Assessment"
              NavigationPage.HasNavigationBar="False"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
-             BackgroundColor="#6E6E6E">
+             BackgroundColor="#faf9f6">
     
     <ContentPage.BindingContext>
         <vm:AssessmentViewModel/>
@@ -14,10 +14,11 @@
 
 
     <VerticalStackLayout>
-        <ImageButton Source="dotnet_bot"
-                     HeightRequest="50"
-                     WidthRequest="100"
-                     Margin="-340,0,0,0"
+        <ImageButton Source="back"
+                     HeightRequest="40"
+                     WidthRequest="50"
+                     Margin="0,0,0,0"
+                     HorizontalOptions="Start"
                      Command="{Binding Back}"
                      IsVisible="{Binding BackButton}"/>
         
@@ -298,18 +299,22 @@
                        FontSize="30"
                        FontAttributes="Bold"/>
                 <Label Text="₱"
-                       FontSize="70"
-                       Margin="80,0,10,-90"
+                       FontSize="90"
+                       Margin="60,-70,10,-90"
+                       TextColor="#FCC000"
                        VerticalOptions="Center"/>
-                <Entry WidthRequest="150"
+                <Entry WidthRequest="120"
                        VerticalOptions="Center"
-                       Margin="60,0,0,-80"
+                       Margin="60,-60,0,-80"
                        FontSize="50"
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"
+                       BackgroundColor="Gray"
+                       PlaceholderColor="#FCC000"
                        MaxLength="5"
                        Text="{Binding Assessment.CigaretteCost, Mode=TwoWay}"
                        Placeholder="0"
+                       TextColor="#FCC000"
                        Keyboard="Numeric"
                        Focused="CigaretteCostEntry_Focused"/>
 
@@ -318,7 +323,7 @@
                          FontAttributes="Bold"
                          BackgroundColor="#FCC000"
                          TextColor="Black"
-                         FontSize="18"
+                         FontSize="20"
                          CornerRadius="25"
                          HeightRequest="50"
                          Command="{Binding fifthbtnQ}"/>

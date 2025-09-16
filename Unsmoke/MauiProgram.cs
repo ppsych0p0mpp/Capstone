@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Syncfusion.Maui.Core.Hosting;
 using Unsmoke.MVVM.Views;
 
 namespace Unsmoke
@@ -10,6 +11,7 @@ namespace Unsmoke
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureSyncfusionCore()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -27,6 +29,7 @@ namespace Unsmoke
             builder.Services.AddSingleton<Community>();
             builder.Services.AddSingleton<LoginPage>();
             builder.Services.AddSingleton<RegisterPage>();
+            builder.Services.AddSingleton<MyPlan>();
             return builder.Build();
         }
     }

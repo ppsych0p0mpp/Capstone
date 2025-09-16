@@ -21,9 +21,6 @@ namespace Unsmoke.MVVM.ViewModel
         private int addsmoke;
 
         [ObservableProperty]
-        private TimeSpan timewithoutCigarette = TimeSpan.Zero;
-
-        [ObservableProperty]
         private DateTime lastSmokeTime = DateTime.Now;
 
 
@@ -61,10 +58,10 @@ namespace Unsmoke.MVVM.ViewModel
         public string ElapsedFormatted => $"{Days}:{Hours}:{Minutes}:{Seconds}";
 
         // Separate parts for binding to individual labels
-        public string Days => ((int)(timewithoutCigarette.TotalDays % 30)).ToString("00");
-        public string Hours => timewithoutCigarette.Hours.ToString("00");
-        public string Minutes => timewithoutCigarette.Minutes.ToString("00");
-        public string Seconds => timewithoutCigarette.Seconds.ToString("00");
+        public string Days => ((int)(Data.TimewithoutCig.TotalDays % 30)).ToString("00");
+        public string Hours => Data.TimewithoutCig.Hours.ToString("00");
+        public string Minutes => Data.TimewithoutCig.Minutes.ToString("00");
+        public string Seconds => Data.TimewithoutCig.Seconds.ToString("00");
 
 
         private void AddCigaretteAction()
@@ -72,7 +69,7 @@ namespace Unsmoke.MVVM.ViewModel
             addsmoke = Data.CigarettesSmokedToday++;
             //reset Timer
             lastSmokeTime = DateTime.Now;
-            timewithoutCigarette = TimeSpan.Zero; // Reset the time without cigarette
+            Data.TimewithoutCig = TimeSpan.Zero; // Reset the time without cigarette
 
             OnPropertyChanged(nameof(CigaretteToday));
             RaiseElapsedChanges();
@@ -92,7 +89,7 @@ namespace Unsmoke.MVVM.ViewModel
         //Add a funtion for time when click add smoke it will revert back the time to zero.
         private void UpdateElapsed()
         {
-            timewithoutCigarette = DateTime.Now - lastSmokeTime;
+            Data.TimewithoutCig = DateTime.Now - lastSmokeTime;
             RaiseElapsedChanges();
         }
         private void RaiseElapsedChanges()
