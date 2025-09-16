@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using Unsmoke.MVVM.Views;
+using CommunityToolkit.Maui;
+
 namespace Unsmoke
 {
     public static class MauiProgram
@@ -10,6 +12,7 @@ namespace Unsmoke
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureSyncfusionCore()
                 .ConfigureFonts(fonts =>
                 {
