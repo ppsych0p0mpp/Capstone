@@ -10,25 +10,27 @@
     NavigationPage.HasNavigationBar="False"
     Title="Unsmoke">
 
+    <!--Add a Profile page-->
+    
+    <!--Middle-->
     <FlyoutItem Title="Dashboard" FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Dashboard"
                       ContentTemplate="{DataTemplate pages:Dashboard}"
                       Route="Dashboard" 
-                      Icon="dotnet_bot.png"
+                      Icon="dashboard"
                       />
         <ShellContent Title="Progress" 
                       ContentTemplate="{DataTemplate pages:Progress}"
                       Route="Progress" 
-                      Icon="dotnet_bot.png"/>
+                      Icon="progress"/>
         <ShellContent Title="Plan" 
                        ContentTemplate="{DataTemplate pages:MyPlan}"
                        Route="MyPlan" 
-                       Icon="dotnet_bot.png"/>
+                       Icon="myplan"/>
         <ShellContent Title="Community" 
                        ContentTemplate="{DataTemplate pages:Community}"
                        Route="Community" 
-                       Icon="dotnet_bot.png"/>
-
+                       Icon="community"/>
     </FlyoutItem>
 
 </Shell>

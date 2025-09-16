@@ -49,7 +49,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <VerticalStackLayout>
-                        <Image Source="get_started_flower_heart_icon.png"
+                        <Image Source="healthy.svg"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                HeightRequest="200"

@@ -11,6 +11,7 @@ namespace Unsmoke.MVVM.Models
         public int Id { get; set; }
         public string ItemName { get; set; }
         public double ItemPrice { get; set; }
+        public string Image { get; set; }
 
     }
 }

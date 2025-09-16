@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using Unsmoke.MVVM.Views;
-
 namespace Unsmoke
 {
     public static class MauiProgram
@@ -30,6 +29,7 @@ namespace Unsmoke
             builder.Services.AddSingleton<LoginPage>();
             builder.Services.AddSingleton<RegisterPage>();
             builder.Services.AddSingleton<MyPlan>();
+            builder.Services.AddSingleton<ProfilePage>();
             return builder.Build();
         }
     }

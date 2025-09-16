@@ -59,7 +59,7 @@
             <!--Progress Time-->
             <Label Text="My Progress" TextColor="Black" Grid.Row="2" Margin="20,0,0,0"/>
 
-            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,40" BackgroundColor="#FFC000" CornerRadius="26" BorderColor="Transparent">
+            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,30,0,0" BackgroundColor="#FFC000" CornerRadius="26" BorderColor="Transparent">
                 <Grid>
                     <Label Text="Time without a cigarette" Margin="80,0,10,0"/>
                     
@@ -77,7 +77,7 @@
 
             </Frame>
             
-            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="3" HeightRequest="200" Margin="0,-50">
+            <Frame BackgroundColor="Transparent" BorderColor="Transparent" Grid.Row="3" HeightRequest="200" Margin="0,0,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -105,7 +105,7 @@
                         </Border.StrokeShape>
                         <Grid>
                             <Label Text="Life Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
-                            <Image Source="medical_aid" HeightRequest="50" Margin="0,0,0,0"/>
+                            <Image Source="medical" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.LifeTimeSaved}"
                                    VerticalOptions="End"
                                    Margin="43,0,0,10"
@@ -138,7 +138,7 @@
            
 
             <Border Grid.Row="4" BackgroundColor="AliceBlue"
-                    Margin="0,40" HeightRequest="160" 
+                    Margin="0,0,0,0" HeightRequest="160" 
                     WidthRequest="350" 
                     Background="#373737">
                 <Border.StrokeShape>
@@ -151,7 +151,7 @@
                                 HorizontalOptions="Center"
                                 />
                         <!--Minus Button-->
-                        <ImageButton Source="minus_icon" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
+                        <ImageButton Source="minus" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
                                      Margin="-210,30,0,10"
                                      HorizontalOptions="Start"/>
                         <!--Number of Cigarettes-->
@@ -160,7 +160,7 @@
                                 TextColor="White"
                                 />
                         <!--Add button-->
-                        <ImageButton Source="plus_icon"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
+                        <ImageButton Source="plus"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
                                      Margin="20,20,0,0"/>
                 </HorizontalStackLayout>
             </Border>
