@@ -6,8 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using Unsmoke.Helper;
 using Unsmoke.MVVM.Models;
+using Unsmoke.MVVM.Views;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -37,7 +40,10 @@ namespace Unsmoke.MVVM.ViewModel
         }
         public ObservableCollection<Education> Resources { get; set; }
         public ObservableCollection<Withdrawal> WithdrawalTips { get; set; }
+
+        //Commands
         public ICommand OpenLinkCommand { get; set; }
+        public ICommand GotoProfile { get; }
 
         public MyPlanVM()
         {
@@ -47,9 +53,9 @@ namespace Unsmoke.MVVM.ViewModel
             {
                 new Education
                 {
-                    Title = "Understand the Risks and Effects of Smoking",
+                    Title = "Health Effects of Smoking and the Benefits of Quitting",
                     Description = "Learn about the health risks of smoking from trusted health organizations.",
-                    Url = "https://www.cdc.gov/tobacco/basic_information/health_effects/index.htm",
+                    Url = "https://journalofethics.ama-assn.org/article/health-effects-smoking-and-benefits-quitting/2011-01",
                     Icon = "warnings.svg"
                 },
                 new Education
@@ -121,6 +127,35 @@ namespace Unsmoke.MVVM.ViewModel
             };
 
             OpenLinkCommand = new Command<string>(async (url) => await Launcher.OpenAsync(url));
+            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
+        }
+
+        private async Task ToProfileAsync()
+        {
+
+            //Check if user is logged in
+            var isLoggedIn = SessionManager.CurrentUser != null;
+
+            if (!isLoggedIn)
+            {
+                // Show alert with OK and Cancel
+                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "Please login or register to access your profile.",
+                    "Login",
+                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
+
+                if (goToLogin)
+                {
+                    // Navigate to login page if user chooses "Login"
+                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
+                }
+
+                return; // Exit method if user cancels
+            }
+
+            // If logged in, proceed to ProfilePage
+            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
         }
         private void UpdateTipOfTheDay()
         {

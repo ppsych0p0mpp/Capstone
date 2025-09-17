@@ -114,6 +114,82 @@ namespace Unsmoke.Service
 
             return await response.Content.ReadAsStringAsync();
         }
+        public async Task<T?> GetDocumentByIdAsync<T>(string collection, string docId) where T : new()
+        {
+            var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/{collection}/{docId}?key={_apiKey}";
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode) return default;
+
+            var json = await response.Content.ReadAsStringAsync();
+            var root = JObject.Parse(json);
+            var fields = root["fields"];
+            if (fields == null) return default;
+
+            var item = new T();
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                if (fields[prop.Name] == null) continue;
+                var fieldType = fields[prop.Name].First as JProperty;
+                var fieldValue = fieldType?.Value?.ToString();
+
+                if (prop.PropertyType == typeof(int) && int.TryParse(fieldValue, out var intVal))
+                    prop.SetValue(item, intVal);
+                else if (prop.PropertyType == typeof(double) && double.TryParse(fieldValue, out var dblVal))
+                    prop.SetValue(item, dblVal);
+                else if (prop.PropertyType == typeof(bool) && bool.TryParse(fieldValue, out var boolVal))
+                    prop.SetValue(item, boolVal);
+                else if (prop.PropertyType == typeof(DateTime) && DateTime.TryParse(fieldValue, out var dtVal))
+                    prop.SetValue(item, dtVal);
+                else
+                    prop.SetValue(item, fieldValue);
+            }
+
+            return item;
+        }
+
+        public async Task<List<T>> GetDocumentsAsync<T>(string collection) where T : new()
+        {
+            var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/{collection}?key={_apiKey}";
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode) return new List<T>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var root = JObject.Parse(json);
+            var documents = root["documents"] as JArray;
+            var result = new List<T>();
+
+            if (documents == null) return result;
+
+            foreach (var doc in documents)
+            {
+                var fields = doc["fields"];
+                if (fields == null) continue;
+
+                var item = new T();
+                foreach (var prop in typeof(T).GetProperties())
+                {
+                    if (fields[prop.Name] == null) continue;
+
+                    var fieldType = fields[prop.Name].First as JProperty;
+                    var fieldValue = fieldType?.Value?.ToString();
+
+                    if (prop.PropertyType == typeof(int) && int.TryParse(fieldValue, out var intVal))
+                        prop.SetValue(item, intVal);
+                    else if (prop.PropertyType == typeof(double) && double.TryParse(fieldValue, out var dblVal))
+                        prop.SetValue(item, dblVal);
+                    else if (prop.PropertyType == typeof(bool) && bool.TryParse(fieldValue, out var boolVal))
+                        prop.SetValue(item, boolVal);
+                    else if (prop.PropertyType == typeof(DateTime) && DateTime.TryParse(fieldValue, out var dtVal))
+                        prop.SetValue(item, dtVal);
+                    else
+                        prop.SetValue(item, fieldValue);
+                }
+
+                result.Add(item);
+            }
+
+            return result;
+        }
 
         // Update Document
         public async Task<string> UpdateDocumentAsync(string collection, string docId, object data)

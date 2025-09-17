@@ -6,12 +6,17 @@
              Title="ProfilePage">
 
     <ContentPage.BindingContext>
-        <vm:AssessmentViewModel/>
-        
+        <vm:ProfileVM/>
     </ContentPage.BindingContext>
     
-    <VerticalStackLayout Spacing="10">
+    <VerticalStackLayout Spacing="-10">
         <!-- User Details -->
+        <ImageButton Source="back"
+                     HeightRequest="30"
+                     WidthRequest="50"
+                     HorizontalOptions="Start"
+                     Margin="0,10,0,0"
+                     Command="{Binding GotoDash}"/>
         <Border WidthRequest="370"
                 HeightRequest="230"
                 Margin="20"
@@ -79,10 +84,10 @@
                                BorderColor="Transparent"
                                Padding="10" CornerRadius="12" HasShadow="False">
                             <Label Text="{Binding SummaryMessage}" 
-                               FontSize="16"
-                               TextColor="#000000"
-                               HorizontalTextAlignment="Start"
-                               LineBreakMode="WordWrap"/>
+                                   FontSize="16"
+                                   TextColor="#000000"
+                                   HorizontalTextAlignment="Start"
+                                   LineBreakMode="WordWrap"/>
                         </Frame>
 
                     </StackLayout>

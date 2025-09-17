@@ -41,7 +41,7 @@
         </HorizontalStackLayout>
 
 
-        <Frame BackgroundColor="#FFFFFF" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
+        <Frame BackgroundColor="#faf9f6" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
                Margin="0,100,0,0">
             <Grid>
                 <Grid.RowDefinitions>
@@ -49,7 +49,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <VerticalStackLayout>
-                        <Image Source="healthy.svg"
+                        <Image Source="healthy"
+                               IsAnimationPlaying="True"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                HeightRequest="200"
@@ -66,7 +67,7 @@
                                HorizontalOptions="Center">
                         </Label>
 
-                    <Button Text="Get Started" FontSize="25" BackgroundColor="#FFC000"
+                    <Button Text="Get Started" FontSize="20" BackgroundColor="#FFC000"
                             Grid.Row="1"
                             HeightRequest="63"
                             WidthRequest="195"
@@ -137,7 +138,7 @@
                                 BackgroundColor="#FFC000"
                                 TextColor="Black"
                                 FontAttributes="Bold"
-                                FontSize="18"
+                                FontSize="20"
                                 CornerRadius="25"
                                 HeightRequest="50"
                                 Command="{Binding secondbtnQ}"/>
@@ -232,7 +233,7 @@
                         FontAttributes="Bold"
                         BackgroundColor="#FCC000"
                         TextColor="Black"
-                        FontSize="18"
+                        FontSize="20"
                         CornerRadius="25"
                         HeightRequest="50"
                         Command="{Binding thirdbtnQ}"/>
@@ -279,7 +280,7 @@
                          FontAttributes="Bold"
                          BackgroundColor="#FCC000"
                          TextColor="Black"
-                         FontSize="18"
+                         FontSize="20"
                          CornerRadius="25"
                          HeightRequest="50"
                          Command="{Binding fourthbtnQ}"/>
@@ -369,12 +370,12 @@
                            HorizontalOptions="Center"
                            Margin="0,30,0,0"/>
 
-                    <Button Text="Next" Margin="0,120,0,0"
+                    <Button Text="Next" Margin="0,150,0,0"
                              VerticalOptions="End"
                              FontAttributes="Bold"
                              BackgroundColor="#FCC000"
                              TextColor="Black"
-                             FontSize="18"
+                             FontSize="20"
                              CornerRadius="25"
                              HeightRequest="50"
                              Command="{Binding sixthbtnQ}"/>
@@ -397,32 +398,26 @@
                BackgroundColor="White"
                HeightRequest="600">
 
-            <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
-
+            <Grid>
+                <VerticalStackLayout>
+                    
+                
                 <!-- Header -->
-                <Label Text="Assessment Results"
+                <Label Text="{Binding HeaderText}"
                        FontSize="26"
                        FontAttributes="Bold"
                        TextColor="#333"
                        HorizontalOptions="Center"
-                       VerticalOptions="Start"
-                       Margin="0,0,0,10"/>
+                       VerticalOptions="Center"
+                       Margin="20,20,0,10"/>
 
                 <!-- Content Section -->
-                <ScrollView Grid.Row="1" Margin="0,10,0,10">
-                    <StackLayout Spacing="12" Padding="5">
-
-                        <!-- Each line of summary in a styled frame -->
-                        <Frame BackgroundColor="#F5F5F5" Padding="10" CornerRadius="12" HasShadow="False">
-                            <Label Text="{Binding SummaryMessage}" 
-                           FontSize="16"
-                           TextColor="#000000"
-                           HorizontalTextAlignment="Start"
-                           LineBreakMode="WordWrap"/>
-                        </Frame>
-
-                    </StackLayout>
-                </ScrollView>
+                    <Frame BorderColor="Transparent">
+                        <Image Source="{Binding CurrentImage}"
+                               Aspect="AspectFit"
+                               WidthRequest="300"
+                               IsAnimationPlaying="{Binding IsLoadingAnimationPlaying}"/>
+                    </Frame>
 
                 <!-- Button Section -->
                 <Button Grid.Row="2"
@@ -433,8 +428,10 @@
                         FontSize="18"
                         CornerRadius="25"
                         HeightRequest="50"
-                        Margin="0,10,0,0"
+                        Margin="0,100,0,0"
+                        IsVisible="{Binding ShowFinishButton}"
                         Command="{Binding seventhbtnQ}"/>
+                </VerticalStackLayout>
             </Grid>
         </Frame>
 
