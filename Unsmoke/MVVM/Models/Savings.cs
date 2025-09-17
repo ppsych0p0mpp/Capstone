@@ -13,8 +13,8 @@ namespace Unsmoke.MVVM.Models
         public double dailyGoal { get; set; }
         public double weeklyGoal { get; set; }
         public double monthlyGoal { get; set; }
-        public double currentDaily { get; set; }
-        public double currentWeekly { get; set; }
-        public double currentMonthly { get; set; }
+        public double Daily { get; set; }
+        public double Weekly { get; set; }
+        public double Monthly { get; set; }
     }
 }

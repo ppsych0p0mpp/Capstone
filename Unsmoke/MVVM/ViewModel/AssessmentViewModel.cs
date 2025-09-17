@@ -18,7 +18,6 @@ namespace Unsmoke.MVVM.ViewModel
     public partial class AssessmentViewModel : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
-        private readonly CultureInfo pesoCulture = new CultureInfo("en-PH");
 
         [ObservableProperty]
         private Models.Savings _savings = new Models.Savings();
@@ -63,16 +62,16 @@ namespace Unsmoke.MVVM.ViewModel
         private double femaleImageScale = 1.0;
 
         [ObservableProperty]
-        private double dailySavings;
+        private string currentImage = "loading.gif";  // default image
 
-        [ObservableProperty] 
-        private double monthlySavings;
+        [ObservableProperty]
+        private string headerText = "Preparing your results…";
 
-        [ObservableProperty] 
-        private double yearlySavings;
+        [ObservableProperty]
+        private bool showFinishButton = false;
 
-        [ObservableProperty] 
-        private string durationDisplay;
+        [ObservableProperty]
+        private bool isLoadingAnimationPlaying = false;
 
         private string _summaryMessage;
         public string SummaryMessage
@@ -141,6 +140,7 @@ namespace Unsmoke.MVVM.ViewModel
 
         public AssessmentViewModel()
         {
+            System.Diagnostics.Debug.WriteLine($"VM created, CurrentImage default: {CurrentImage}");
             ConfidenceIcons = new ObservableCollection<ConfidenceIcon>
             {
                 new ConfidenceIcon { Icon = "sad.svg", Text = "Not Confident" },
@@ -314,9 +314,31 @@ namespace Unsmoke.MVVM.ViewModel
                     Dashlines = true;
                     break;
                 case 7:
+                    System.Diagnostics.Debug.WriteLine($"Reached case 7, CurrentImage before change: {CurrentImage}");
                     IsSeventhVisible = true; // Last page
 
-                    CalculateSavings();
+                    // Start the loading animation
+                    HeaderText = "Preparing your results…";
+                    CurrentImage = "loading.gif";      // MUST exist in Resources/Images
+                    IsLoadingAnimationPlaying = true;  // bind this in XAML to Image.IsAnimationPlaying
+                    ShowFinishButton = false;
+
+                    // Small yield so UI processes binding change
+                    await Task.Yield();
+
+                    // Wait for the GIF to "play" (adjust duration as needed)
+                    // If your gif loops, use a duration that makes sense (3000ms = 3s)
+                    await Task.Delay(6000);
+
+                    // After delay, stop animation and show check icon
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        IsLoadingAnimationPlaying = false;
+                        CurrentImage = "check.svg"; 
+                        HeaderText = "Assessment Complete!";
+                        ShowFinishButton = true;
+                    });
+
                     return;
             }
             // Update active dashline color (starting at 2nd frame)
@@ -408,42 +430,7 @@ namespace Unsmoke.MVVM.ViewModel
         
        
 
-        //Calculate Saving
-        private void CalculateSavings()
-        {
-            // Calculate total days based on whether the user chose Years or Months
-            double daysSmoked = Assessment.YearMonth == "Years"
-                ? Assessment.DurationOfSmoking * 365
-                : Assessment.DurationOfSmoking * 30;  // Approximation for months
-
-            // Daily cost
-            double dailyCost = Assessment.CigarettesPerDay * Assessment.CigaretteCost;
-
-            // Total money spent
-            double moneySpent = dailyCost * daysSmoked;
-
-            // Savings calculations
-            double dailySavings = dailyCost;
-            double weeklySavings = dailyCost * 7;
-            double monthlySavings = dailyCost * 30;
-
-            // Store in Savings model
-            _savings.totalSaved = moneySpent;
-            _savings.currentDaily = dailySavings;
-            _savings.currentWeekly = weeklySavings;
-            _savings.currentMonthly = monthlySavings;
-
-            // Build the summary message
-            SummaryMessage = $"Gender: {Assessment.Gender}\n" +
-                             $"Years of Smoking: {Assessment.DurationOfSmoking} {Assessment.YearMonth}\n" +
-                             $"Cigarettes/Day: {Assessment.CigarettesPerDay}\n" +
-                             $"Cost per Pack: {Assessment.CigaretteCost.ToString("C", pesoCulture)}\n" +
-                             $"Money Spent: {_savings.totalSaved.ToString("C", pesoCulture)}\n" +
-                             $"Daily Savings: {_savings.currentDaily.ToString("C", pesoCulture)}\n" +
-                             $"Monthly Savings: {_savings.currentWeekly.ToString("C", pesoCulture)}\n" +
-                             $"Yearly Savings: {(_savings.currentDaily * 365).ToString("C", pesoCulture)}\n" +
-                             $"Confidence Level: {Assessment.ConfidenceLevel}";
-        }
+        
 
     }
 }

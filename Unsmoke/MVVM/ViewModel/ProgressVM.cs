@@ -8,7 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Unsmoke.Helper;
 using Unsmoke.MVVM.Models;
+using Unsmoke.MVVM.Views;
 using Unsmoke.Service;
 
 
@@ -17,6 +19,24 @@ namespace Unsmoke.MVVM.ViewModel
     public partial class ProgressVM : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
+
+        public DashboardData Data { get; set; }
+
+        [ObservableProperty]
+        private Savings _savings = new Savings();
+
+        [ObservableProperty]
+        private double moneySaved;
+
+        [ObservableProperty]
+        private double dailyGoalProgress;
+
+        [ObservableProperty]
+        private double weeklyGoalProgress;
+
+        [ObservableProperty]
+        private double monthlyGoalProgress;
+
         public ObservableCollection<Achievement> Achievements { get; set; }
 
         public ObservableCollection<Item> Items { get; set; } = new();  // Store added items
@@ -44,6 +64,7 @@ namespace Unsmoke.MVVM.ViewModel
         public ICommand ItemComp { get; }
         public ICommand AddItemCommand { get; }
         public ICommand PickImageCommand { get; }
+        public ICommand GotoProfile { get; }
 
         //Constructor
         public ProgressVM()
@@ -64,6 +85,9 @@ namespace Unsmoke.MVVM.ViewModel
             ItemComp = new RelayCommand(ShowItemComparison);
             AddItemCommand = new AsyncRelayCommand(AddItemAsync);
             PickImageCommand = new AsyncRelayCommand(PickImageAsync);
+            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
+
+            Task.Run(LoadDashboardDataAsync);
         }
 
         private int index = 1;
@@ -133,6 +157,99 @@ namespace Unsmoke.MVVM.ViewModel
             await Application.Current.MainPage.DisplayAlert("Success", "Item Added!", "OK");
         }
 
-        //Add Image
+        private async Task ToProfileAsync()
+        {
+
+            //Check if user is logged in
+            var isLoggedIn = SessionManager.CurrentUser != null;
+
+            if (!isLoggedIn)
+            {
+                // Show alert with OK and Cancel
+                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "Please login or register to access your profile.",
+                    "Login",
+                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
+
+                if (goToLogin)
+                {
+                    // Navigate to login page if user chooses "Login"
+                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
+                }
+
+                return; // Exit method if user cancels
+            }
+
+            // If logged in, proceed to ProfilePage
+            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
+        }
+
+        private async Task LoadDashboardDataAsync()
+        {
+            try
+            {
+                // Get the dashboard data for the current user
+                var docId = SessionManager.CurrentUser?.UserID.ToString();
+                if (string.IsNullOrEmpty(docId)) return;
+
+                var dashboard = await _firestoreService.GetDocumentByIdAsync<DashboardData>("DashboardStats", docId);
+                if (dashboard == null) return;
+
+                Data = dashboard;
+                MoneySaved = dashboard.MoneySaved;
+
+                // Update goal progress
+                DailyGoalProgress = MoneySaved / 50;    // assuming daily goal = ₱50
+                WeeklyGoalProgress = MoneySaved / 350;  // weekly goal = ₱350
+                MonthlyGoalProgress = MoneySaved / 1500; // monthly goal = ₱1500
+
+                // Check and unlock achievements
+                CheckAchievements();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading dashboard data: {ex.Message}");
+            }
+        }
+
+        private void CheckAchievements()
+        {
+            foreach (var achievement in Achievements)
+            {
+                switch (achievement.Title)
+                {
+                    case "First Day":
+                        if (Data.TimewithoutCig >= TimeSpan.FromDays(1))
+                            achievement.IsUnlocked = true;
+                        break;
+
+                    case "Money Saver":
+                        if (MoneySaved >= 100)
+                            achievement.IsUnlocked = true;
+                        break;
+
+                    case "Health Hero":
+                        if (Data.TimewithoutCig >= TimeSpan.FromDays(3))
+                            achievement.IsUnlocked = true;
+                        break;
+
+                    case "Week Warrior":
+                        if (Data.TimewithoutCig >= TimeSpan.FromDays(7))
+                            achievement.IsUnlocked = true;
+                        break;
+
+                    case "Strong Lungs":
+                        if (Data.TimewithoutCig >= TimeSpan.FromDays(14))
+                            achievement.IsUnlocked = true;
+                        break;
+
+                    case "Champion":
+                        if (Data.TimewithoutCig >= TimeSpan.FromDays(30))
+                            achievement.IsUnlocked = true;
+                        break;
+                }
+            }
+        }
     }
 }

@@ -36,15 +36,9 @@ namespace Unsmoke.MVVM.ViewModel
             TogglePassword = new RelayCommand(TogglePasswordVisibility);
             _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
             LoginCommand = new AsyncRelayCommand(LoginAsync);
-
-            
-
-
         }
 
-
-
-        public async void RegisterPage()
+        private async void RegisterPage()
         {
             Application.Current.MainPage = App.Services.GetRequiredService<RegisterPage>();
             return;

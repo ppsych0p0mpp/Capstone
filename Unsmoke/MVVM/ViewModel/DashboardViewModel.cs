@@ -23,9 +23,6 @@ namespace Unsmoke.MVVM.ViewModel
         private string _assessmentDocId; // Store the documentId here after assessment is taken
         private bool hasCountedAvoidedToday = false;
 
-
-        public Models.Assessment assessment = new Models.Assessment();
-
         [ObservableProperty]
         private int addsmoke;
 
@@ -39,6 +36,7 @@ namespace Unsmoke.MVVM.ViewModel
         public ICommand AddCigarette { get;}
         public ICommand MinusCigarette { get; }
         public ICommand LoadDashboardDataCommand { get; }
+        public ICommand GotoProfile { get; }
 
         private readonly IDispatcherTimer _timer;
 
@@ -56,7 +54,8 @@ namespace Unsmoke.MVVM.ViewModel
 
             AddCigarette = new RelayCommand(AddCigaretteAction);
             MinusCigarette = new RelayCommand(MinusCigaretteAction);
-            //LoadDashboardDataCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
+            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
+            LoadDashboardDataCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
 
             // MAUI timer
             _timer = Application.Current!.Dispatcher.CreateTimer();
@@ -77,25 +76,25 @@ namespace Unsmoke.MVVM.ViewModel
         public string Minutes => Data.TimewithoutCig.Minutes.ToString("00");
         public string Seconds => Data.TimewithoutCig.Seconds.ToString("00");
 
-        //private async Task LoadDashboardDataAsync()
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(_assessmentDocId)) return;
+        private async Task LoadDashboardDataAsync()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_assessmentDocId)) return;
 
-        //        var data = await _firestoreService.GetDocumentsAsync<DashboardData>("DashboardStats", _assessmentDocId);
-        //        if (data != null)
-        //        {
-        //            Data = data;
-        //            lastSmokeTime = data.QuitDate; // or saved LastSmokeTime
-        //            RaiseElapsedChanges();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error loading dashboard: {ex.Message}");
-        //    }
-        //}
+                var data = await _firestoreService.GetDocumentByIdAsync<DashboardData>("DashboardStats", _assessmentDocId);
+                if (data != null)
+                {
+                    Data = data;
+                    lastSmokeTime = data.QuitDate;
+                    RaiseElapsedChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading dashboard: {ex.Message}");
+            }
+        }
         private async Task SaveDashboardDataAsync()
         {
             try
@@ -153,11 +152,11 @@ namespace Unsmoke.MVVM.ViewModel
             // When 24 hours passed without smoking
             if (Data.TimewithoutCig.TotalHours >= 24 && !hasCountedAvoidedToday)
             {
-                Data.CigarettedAvoided = assessment.CigarettesPerDay; // Increment by daily average
+                Data.CigarettedAvoided = _assessment.CigarettesPerDay; // Increment by daily average
                 hasCountedAvoidedToday = true;
 
                 // Example: Money saved logic
-                Data.MoneySaved = assessment.CigaretteCost;// Increment by daily cost
+                Data.MoneySaved = _assessment.CigaretteCost;// Increment by daily cost
 
                 // Example: Life time saved (e.g., 11 min per cigarette)
                 Data.LifeTimeSaved += (Data.CigarettesSmokedToday * 11) / 1440.0; // Days saved
@@ -176,7 +175,34 @@ namespace Unsmoke.MVVM.ViewModel
             OnPropertyChanged(nameof(ElapsedFormatted));
         }
 
-        //Add function for Cigarette avoided increment when time without cigarette reach 24 hour
+        private async Task ToProfileAsync()
+        {
+            //Check if user is logged in
+            var isLoggedIn = SessionManager.CurrentUser != null;
+
+            if (!isLoggedIn)
+            {
+                // Show alert with OK and Cancel
+                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "Please login or register to access your profile.",
+                    "Login",
+                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
+
+                if (goToLogin)
+                {
+                    // Navigate to login page if user chooses "Login"
+                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
+                }
+
+                return; // Exit method if user cancels
+            }
+
+            // If logged in, proceed to ProfilePage
+            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
+        }
+
+        
 
 
 

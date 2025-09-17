@@ -23,22 +23,20 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <Grid HeightRequest="40">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width=".33*"/>
-                    <ColumnDefinition Width=".33*"/>
-                    <ColumnDefinition Width=".33*"/>
-                </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="Black" HeightRequest="50" Stroke="Black" StrokeThickness="2">
-                    <Label Text="Burger" Grid.Column="0"/>
-                </Border>
-                <Label Text="Unsmoke" Grid.Column="1" HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"/>
 
-                <Label Text="Profile" Grid.Column="2" HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
-            </Grid>
+            <HorizontalStackLayout Spacing="120">
+                <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
+                       Margin="170,0,0,0"/>
+                <ImageButton Source="user"
+                             HeightRequest="50"
+                             WidthRequest="50"
+                             Margin="0,10,0,0"
+                             HorizontalOptions="End"
+                             Command="{Binding GotoProfile}"/>
+            </HorizontalStackLayout>
 
-            <Frame Grid.Row="1" BackgroundColor="#373737" HeightRequest="150" WidthRequest="355" Margin="20" CornerRadius="26" BorderColor="Transparent">
+            <Frame Grid.Row="1" BackgroundColor="#373737" HeightRequest="150" WidthRequest="355" Margin="20" CornerRadius="26" BorderColor="#f3f3f3"
+                   HasShadow="True">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height=".5*"/>
@@ -59,7 +57,8 @@
             <!--Progress Time-->
             <Label Text="My Progress" TextColor="Black" Grid.Row="2" Margin="20,0,0,0"/>
 
-            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,30,0,0" BackgroundColor="#FFC000" CornerRadius="26" BorderColor="Transparent">
+            <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,30,0,0" BackgroundColor="#FFC000" CornerRadius="26" BorderColor="#f3f3f3"
+                   HasShadow="True">
                 <Grid>
                     <Label Text="Time without a cigarette" Margin="80,0,10,0"/>
                     
@@ -84,7 +83,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" Background="#FFBD7B" WidthRequest="100" Stroke="Transparent" Margin="15,0,0,10">
+                    <Border Grid.Column="0" Background="#FFBD7B" WidthRequest="110" Stroke="Transparent" Margin="10,0,0,10">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
@@ -93,13 +92,13 @@
                             <Image Source="cigarette" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.CigarettedAvoided}"
                                    VerticalOptions="End"
-                                   Margin="43,0,0,10"
+                                   Margin="45,0,0,10"
                                    FontSize="25"
                                    FontAttributes="Bold"
                                    />
                         </Grid>
                     </Border>
-                    <Border Grid.Column="1" Background="#FFC000" WidthRequest="100" Stroke="Transparent" Margin="25,0,0,10">
+                    <Border Grid.Column="1" Background="#FFC000" WidthRequest="110" Stroke="Transparent" Margin="10,0,0,10">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
@@ -108,12 +107,12 @@
                             <Image Source="medical" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.LifeTimeSaved}"
                                    VerticalOptions="End"
-                                   Margin="43,0,0,10"
+                                   Margin="45,0,0,10"
                                    FontSize="25"
                                    FontAttributes="Bold"/>
                         </Grid>
                     </Border>
-                    <Border Grid.Column="2" Background="#FE8C00" WidthRequest="100" Stroke="Transparent" Margin="20,0,0,10"
+                    <Border Grid.Column="2" Background="#FE8C00" WidthRequest="110" Stroke="Transparent" Margin="10,0,0,10"
                             >
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="24"/>
@@ -124,7 +123,7 @@
                             <Image Source="peso" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.MoneySaved}"
                                    VerticalOptions="End"
-                                   Margin="43,0,0,10"
+                                   Margin="45,0,0,10"
                                    FontSize="25"
                                    FontAttributes="Bold"/>
                         </Grid>
@@ -135,12 +134,18 @@
 
             </Frame>
 
-           
 
-            <Border Grid.Row="4" BackgroundColor="AliceBlue"
-                    Margin="0,0,0,0" HeightRequest="160" 
+
+            <Border Grid.Row="4" BackgroundColor="#373737"
+                    Margin="0,-10,0,0" HeightRequest="140" 
                     WidthRequest="350" 
-                    Background="#373737">
+                    Stroke="Transparent">
+                <Border.Shadow>
+                    <Shadow Brush="Black"
+                            Offset="10,10"
+                            Radius="10"
+                            Opacity="0.5"/>
+                </Border.Shadow>
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="24"/>
                 </Border.StrokeShape>

@@ -30,6 +30,8 @@ namespace Unsmoke.MVVM.ViewModel
 
         public ICommand ShowEditDeleteAction { get; }
 
+        public ICommand GotoProfile { get; }
+
         public ObservableCollection<Post> Posts { get; } = new();
 
         public CommunityVm()
@@ -40,6 +42,7 @@ namespace Unsmoke.MVVM.ViewModel
             DeletePostCommand = new AsyncRelayCommand<Post>(DeletePostAsync);
             EditPostCommand = new AsyncRelayCommand<Post>(EditPostAsync);
             ShowEditDeleteAction = new RelayCommand(showDeleteEdit);
+            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
 
             Task.Run(LoadPostsAsync);
         }
@@ -59,17 +62,43 @@ namespace Unsmoke.MVVM.ViewModel
 
             if (documents != null)
             {
+                // Load all users once to avoid multiple requests per post
+                var usersJson = await _firestoreService.GetDocumentsAsync("Users");
+                var usersData = JObject.Parse(usersJson);
+                var usersDict = new Dictionary<int, string>();
+
+                // Build dictionary of UserID -> FullName
+                var userDocs = usersData["documents"];
+                if (userDocs != null)
+                {
+                    foreach (var userDoc in userDocs)
+                    {
+                        var userFields = userDoc["fields"];
+                        var userIdStr = userFields?["UserID"]?["integerValue"]?.ToString();
+                        var fullName = userFields?["FullName"]?["stringValue"]?.ToString();
+
+                        if (int.TryParse(userIdStr, out int userId))
+                        {
+                            usersDict[userId] = fullName ?? "Unknown User";
+                        }
+                    }
+                }
+
+                // Process posts
                 foreach (var doc in documents)
                 {
                     var fields = doc["fields"];
                     var id = doc["name"].ToString().Split('/').Last();
+
+                    var userId = int.TryParse(fields?["UserId"]?["integerValue"]?.ToString(), out var uid) ? uid : 0;
 
                     var post = new Post
                     {
                         Id = id,
                         Content = fields?["Content"]?["stringValue"]?.ToString(),
                         Tags = fields?["Tags"]?["stringValue"]?.ToString(),
-                        UserId = int.TryParse(fields?["UserId"]?["integerValue"]?.ToString(), out var userId) ? userId : 0,
+                        UserId = userId,
+                        FullName = usersDict.ContainsKey(userId) ? usersDict[userId] : "Unknown User",
                         DateCreated = DateTime.TryParse(fields?["DateCreated"]?["timestampValue"]?.ToString(), out var date)
                                         ? date : DateTime.MinValue,
                         IsDeleted = bool.TryParse(fields?["IsDeleted"]?["booleanValue"]?.ToString(), out var deleted) && deleted
@@ -151,8 +180,33 @@ namespace Unsmoke.MVVM.ViewModel
             Application.Current.MainPage = App.Services.GetRequiredService<CreatePost>();
             return;
         }
-        
-        //Add funtion if the user is not login/register validation will show 
-        
+        private async Task ToProfileAsync()
+        {
+            //Check if user is logged in
+            var isLoggedIn = SessionManager.CurrentUser != null;
+
+            if (!isLoggedIn)
+            {
+                // Show alert with OK and Cancel
+                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
+                    "Login Required",
+                    "Please login or register to access your profile.",
+                    "Login",
+                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
+
+                if (goToLogin)
+                {
+                    // Navigate to login page if user chooses "Login"
+                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
+                }
+
+                return; // Exit method if user cancels
+            }
+
+            // If logged in, proceed to ProfilePage
+            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
+        }
+
+
     }
 }

@@ -1,13 +1,21 @@
 using System.Runtime.ExceptionServices;
+using Unsmoke.MVVM.ViewModel;
 
 namespace Unsmoke.MVVM.Views;
 
 public partial class Assessment : ContentPage
 {
-	public Assessment()
+    private readonly AssessmentViewModel vm;
+    public Assessment()
 	{
         InitializeComponent();
-	}
+        vm = BindingContext as AssessmentViewModel;
+    }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        System.Diagnostics.Debug.WriteLine($"CurrentImage on page appearing: {vm?.CurrentImage}");
+    }
     private async void OnGenderImageClicked(object sender, EventArgs e)
     {
         if (sender is ImageButton imageButton)

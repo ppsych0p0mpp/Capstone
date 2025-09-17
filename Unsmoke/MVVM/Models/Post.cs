@@ -17,6 +17,8 @@ namespace Unsmoke.MVVM.Models
 
         public int UserId { get; set; }
 
+        public string FullName { get; set; }
+
         public DateTime DateCreated { get; set; }
 
         public bool IsDeleted { get; set; }   // For soft deletion

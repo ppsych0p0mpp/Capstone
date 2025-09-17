@@ -5,7 +5,8 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
              Title="MyPlan"
-             BackgroundColor="#faf9f6">
+             BackgroundColor="#faf9f6"
+             x:Name="Educational">
 
     <ContentPage.BindingContext>
         <vm:MyPlanVM/>
@@ -14,24 +15,31 @@
     <Grid>
         <ScrollView>
         <VerticalStackLayout>
-            <HorizontalStackLayout Spacing="120">
-                <Border  Background="Black" HeightRequest="50" Stroke="Black" StrokeThickness="2">
-                    <Label Text="Burger" Grid.Column="0"
-                HorizontalOptions="Start"/>
-                </Border>
-                <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
-            />
-                <Label Text="Profile"  HorizontalOptions="End" VerticalTextAlignment="Center" TextColor="Black"/>
-            </HorizontalStackLayout>
-            <Border Stroke="Black"
-                    HeightRequest="200"
+                <HorizontalStackLayout Spacing="120">
+                    <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
+                            Margin="170,0,0,0"/>
+                    <ImageButton Source="user"
+                                 HeightRequest="50"
+                                 WidthRequest="50"
+                                 Margin="0,10,0,0"
+                                 HorizontalOptions="End"
+                                 Command="{Binding GotoProfile}"/>
+                </HorizontalStackLayout>
+                <Border Stroke="Black"
+                    HeightRequest="190"
                     WidthRequest="370"
                     Margin="20"
                     BackgroundColor="#2E2E2E">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="30"/>
                 </Border.StrokeShape>
-                <VerticalStackLayout>
+                    <Border.Shadow>
+                        <Shadow Brush="Black"
+                                Offset="10,10"
+                                Radius="10"
+                                Opacity=".2"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout>
                     <Image Source="book"
                            WidthRequest="50"
                            HeightRequest="50"
@@ -44,7 +52,7 @@
                            Margin="80,-45,0,0"
                            />
                         <Border WidthRequest="330"
-                                Margin="20,20,20,0"
+                                Margin="20,30,20,0"
                                 Padding="15"
                                 Stroke="Transparent"
                                 BackgroundColor="#FCC000"
