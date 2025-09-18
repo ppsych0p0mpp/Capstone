@@ -13,10 +13,13 @@
 
     <Grid>
         <VerticalStackLayout Spacing="20">
-            <Image Source="dotnet_bot"/>
+            <Image Source="logo"
+                   WidthRequest="200"
+                   HeightRequest="200"
+                   Margin="20"/>
             <Label Text=" Welcome to Unsmoke "
                    HorizontalOptions="Center"
-                   FontSize="20"
+                   FontSize="30"
                    FontAttributes="Bold"/>
 
             <Label Text="Username"

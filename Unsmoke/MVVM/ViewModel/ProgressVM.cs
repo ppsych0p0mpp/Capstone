@@ -200,9 +200,9 @@ namespace Unsmoke.MVVM.ViewModel
                 MoneySaved = dashboard.MoneySaved;
 
                 // Update goal progress
-                DailyGoalProgress = MoneySaved / 50;    // assuming daily goal = ₱50
-                WeeklyGoalProgress = MoneySaved / 350;  // weekly goal = ₱350
-                MonthlyGoalProgress = MoneySaved / 1500; // monthly goal = ₱1500
+                DailyGoalProgress = MoneySaved / 50;    
+                WeeklyGoalProgress = MoneySaved / 350;  
+                MonthlyGoalProgress = MoneySaved / 1500;
 
                 // Check and unlock achievements
                 CheckAchievements();
@@ -213,10 +213,12 @@ namespace Unsmoke.MVVM.ViewModel
             }
         }
 
-        private void CheckAchievements()
+        private async void CheckAchievements()
         {
             foreach (var achievement in Achievements)
             {
+                bool wasUnlocked = achievement.IsUnlocked; // Track old state
+
                 switch (achievement.Title)
                 {
                     case "First Day":
@@ -248,6 +250,15 @@ namespace Unsmoke.MVVM.ViewModel
                         if (Data.TimewithoutCig >= TimeSpan.FromDays(30))
                             achievement.IsUnlocked = true;
                         break;
+                }
+
+                // Show alert only when it’s newly unlocked
+                if (!wasUnlocked && achievement.IsUnlocked)
+                {
+                   await Application.Current.MainPage.DisplayAlert(
+                        "Achievement Unlocked!",
+                        $"{achievement.Title} - {achievement.Description}",
+                        "OK");
                 }
             }
         }
