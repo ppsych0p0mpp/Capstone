@@ -32,13 +32,16 @@
                            WidthRequest="100" 
                            HorizontalOptions="Start" 
                            Margin="20,20,0,10"/>
-                    <Label Text="John Doe"
+                    <Label Text="{Binding FullName}"
                            TextColor="White"
                            FontAttributes="Bold"
                            FontSize="20"
                            Margin="10,40,0,0"/>
-                    <Label Text="Quit Date :"
+                    <Label Text="Quit Date : "
                            Margin="-80,70,0,0"
+                           TextColor="White"/>
+                    <Label Text="{Binding AssessmentDate}"
+                           Margin="-0,70,0,0"
                            TextColor="White"/>
                 </HorizontalStackLayout>
                 <Border Margin="30,10,30,0"
@@ -102,6 +105,7 @@
                 TextColor="Black"
                 FontAttributes="Bold"
                 FontSize="20"
+                Command="{Binding Logout}"
                 BackgroundColor="#FFC000"/>
     </VerticalStackLayout>
 </ContentPage>
