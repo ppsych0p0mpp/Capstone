@@ -42,12 +42,9 @@
 
 
         <Frame BackgroundColor="#faf9f6" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
-               Margin="0,100,0,0">
+               Margin="0,100,0,0"
+               HeightRequest="1000">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
                 <VerticalStackLayout>
                         <Image Source="healthy"
                                IsAnimationPlaying="True"
@@ -76,9 +73,19 @@
                             FontAttributes="Bold"
                             Margin="10,130,0,0"
                             Command="{Binding Show}"/>
+                    <Label Text="Already have an account?"
+                            HorizontalOptions="Center"
+                            Margin="-50,10,0,0"/>
+                    <Label Text="Sign In"
+                           TextDecorations="Underline"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Margin="170,-20,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GotoLogin}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 </VerticalStackLayout>
-
-                
             </Grid>
         </Frame>
         

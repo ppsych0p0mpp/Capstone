@@ -56,7 +56,6 @@ namespace Unsmoke.MVVM.ViewModel
             if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Please enter both username and password.", "OK");
-                
                 return;
             }
 
@@ -77,22 +76,38 @@ namespace Unsmoke.MVVM.ViewModel
                 {
                     var username = doc["fields"]?["Username"]?["stringValue"]?.ToString();
                     var passwordHash = doc["fields"]?["Password"]?["stringValue"]?.ToString();
+                    var fullName = doc["fields"]?["FullName"]?["stringValue"]?.ToString();
+                    var userId = doc["fields"]?["UserId"]?["stringValue"]?.ToString();
 
-                    // Compare username
+                    // Match username
                     if (username == user.Username)
                     {
-                        // Verify password hash
+                        // Verify password
                         if (VerifyPassword(user.Password, passwordHash))
                         {
+                            // Store user session
                             SessionManager.CurrentUser = new Users
                             {
-                                UserID = user.UserID, // you'll get this from Firestore data
-                                FullName = User.FullName,
-                                Username = User.Username
+                                UserID = userId,
+                                FullName = fullName,
+                                Username = username
                             };
 
-                            await Application.Current.MainPage.DisplayAlert("Success", "Login successful!", "OK");
-                            Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
+                            // Check if assessment exists for this user
+                            var assessment = await _firestoreService.GetDocumentByIdAsync<Models.Assessment>("assessments", userId);
+                            if (assessment == null)
+                            {
+                                // No assessment → go to assessment page
+                                await Application.Current.MainPage.DisplayAlert("Welcome", "Please complete your first assessment.", "OK");
+                                Application.Current.MainPage = App.Services.GetRequiredService<Views.Assessment>();
+                            }
+                            else
+                            {
+                                // Assessment exists → go to dashboard
+                                await Application.Current.MainPage.DisplayAlert("Success", "Login successful!", "OK");
+                                Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
+                            }
+
                             return;
                         }
                         else
@@ -111,7 +126,7 @@ namespace Unsmoke.MVVM.ViewModel
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Login failed: {ex.Message}", "OK");
             }
-           
+
         }
 
         // Password verification (hash)

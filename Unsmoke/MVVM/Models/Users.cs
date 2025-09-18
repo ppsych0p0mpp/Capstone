@@ -8,7 +8,7 @@ namespace Unsmoke.MVVM.Models
 {
     public class Users
     {
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public string FullName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

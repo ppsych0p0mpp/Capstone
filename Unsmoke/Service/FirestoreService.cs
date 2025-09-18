@@ -8,6 +8,8 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 using Unsmoke.MVVM.Models;
+using Google.Cloud.Firestore;
+using System.Net;
 
 namespace Unsmoke.Service
 {
@@ -22,6 +24,8 @@ namespace Unsmoke.Service
             _httpClient = new HttpClient();
             _projectId = projectId;
             _apiKey = apiKey;
+          
+
         }
 
         // Add a new Post document
@@ -64,14 +68,14 @@ namespace Unsmoke.Service
                     Id = id,
                     Tags = fields?["Tags"]?["stringValue"]?.ToString(),
                     Content = fields?["Content"]?["stringValue"]?.ToString(),
-                    UserId = 0,
+                    UserId = "0",
                     DateCreated = DateTime.UtcNow
                 };
 
                 // parse UserId (integerValue)
                 var userIdToken = fields?["UserId"]?["integerValue"];
                 if (userIdToken != null && int.TryParse(userIdToken.ToString(), out var uid))
-                    post.UserId = uid;
+                    post.UserId = uid.ToString();
 
                 // parse DateCreated (timestampValue)
                 var tsToken = fields?["DateCreated"]?["timestampValue"];
@@ -82,6 +86,72 @@ namespace Unsmoke.Service
             }
 
             return posts.OrderByDescending(p => p.DateCreated).ToList();
+        }
+
+        public async Task<List<T>> QueryDocumentsAsync<T>(string collectionName, string fieldName, object value) where T : new()
+        {
+            var url = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents:runQuery?key={_apiKey}";
+
+            // Firestore structured query
+            var query = new
+            {
+                structuredQuery = new
+                {
+                    from = new[] { new { collectionId = collectionName } },
+                    where = new
+                    {
+                        fieldFilter = new
+                        {
+                            field = new { fieldPath = fieldName },
+                            op = "EQUAL",
+                            value = new { stringValue = value.ToString() }
+                        }
+                    }
+                }
+            };
+
+            var json = JsonConvert.SerializeObject(query);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(url, content);
+            response.EnsureSuccessStatusCode();
+
+            var resultJson = await response.Content.ReadAsStringAsync();
+            var resultArray = JArray.Parse(resultJson);
+
+            var list = new List<T>();
+
+            foreach (var item in resultArray)
+            {
+                var doc = item["document"];
+                if (doc == null) continue;
+
+                var fields = doc["fields"];
+                if (fields == null) continue;
+
+                var obj = new T();
+                foreach (var prop in typeof(T).GetProperties())
+                {
+                    if (fields[prop.Name] == null) continue;
+                    var fieldType = fields[prop.Name].First as JProperty;
+                    var fieldValue = fieldType?.Value?.ToString();
+
+                    if (prop.PropertyType == typeof(int) && int.TryParse(fieldValue, out var intVal))
+                        prop.SetValue(obj, intVal);
+                    else if (prop.PropertyType == typeof(double) && double.TryParse(fieldValue, out var dblVal))
+                        prop.SetValue(obj, dblVal);
+                    else if (prop.PropertyType == typeof(bool) && bool.TryParse(fieldValue, out var boolVal))
+                        prop.SetValue(obj, boolVal);
+                    else if (prop.PropertyType == typeof(DateTime) && DateTime.TryParse(fieldValue, out var dtVal))
+                        prop.SetValue(obj, dtVal);
+                    else
+                        prop.SetValue(obj, fieldValue);
+                }
+
+                list.Add(obj);
+            }
+
+            return list;
         }
 
         private string GetCollectionUrl(string collection) =>
@@ -189,6 +259,39 @@ namespace Unsmoke.Service
             }
 
             return result;
+        }
+
+        public async Task SetDocumentAsync<T>(string collection, string documentId, T data)
+        {
+            // Ensure time/timeSpan conversions are already done on the object (e.g., TimewithoutCigSeconds)
+            var docUrl = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/{collection}/{documentId}?key={_apiKey}";
+            var firestoreObj = new JObject { ["fields"] = ConvertToFirestoreFields(data) };
+            var json = firestoreObj.ToString(Formatting.None);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Check if document exists
+            var getResponse = await _httpClient.GetAsync(docUrl);
+
+            if (getResponse.IsSuccessStatusCode)
+            {
+                // Document exists -> update via PATCH
+                var patchResponse = await _httpClient.PatchAsync(docUrl, content);
+                patchResponse.EnsureSuccessStatusCode();
+                return;
+            }
+
+            // If not found -> create with documentId using createDocument endpoint (POST with documentId query)
+            if (getResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // collection create URL already includes ?key=... so we append &documentId=
+                var createUrl = $"https://firestore.googleapis.com/v1/projects/{_projectId}/databases/(default)/documents/{collection}?documentId={WebUtility.UrlEncode(documentId)}&key={_apiKey}";
+                var postResponse = await _httpClient.PostAsync(createUrl, content);
+                postResponse.EnsureSuccessStatusCode();
+                return;
+            }
+
+            // Any other error -> throw
+            getResponse.EnsureSuccessStatusCode();
         }
 
         // Update Document

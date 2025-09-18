@@ -10,7 +10,7 @@ namespace Unsmoke
 
             InitializeComponent();
             Services = serviceProvider;
-            MainPage = App.Services.GetRequiredService<ProfilePage>();
+            MainPage = App.Services.GetRequiredService<Assessment>();
         }
     }
 }

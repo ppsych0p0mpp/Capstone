@@ -99,19 +99,14 @@ namespace Unsmoke.MVVM.ViewModel
         {
             try
             {
-                var userId = SessionManager.CurrentUser?.UserID ?? 0;
-                if (userId == 0) return;
+                var userId = SessionManager.CurrentUser?.UserID ?? null;
+                if (userId == null) return;
 
-                var saveData = new
-                {
-                    CigarettesSmokedToday = Data.CigarettesSmokedToday,
-                    CigarettedAvoided = Data.CigarettedAvoided,
-                    MoneySaved = Data.MoneySaved,
-                    LifeTimeSaved = Data.LifeTimeSaved,
-                    LastSmokeTime = lastSmokeTime
-                };
+                // Store TimewithoutCig as seconds for Firestore
+                Data.TimewithoutCigSeconds = Data.TimewithoutCig.TotalSeconds;
 
-                await _firestoreService.UpdateDocumentAsync("DashboardStats", userId.ToString(), saveData);
+                // Save entire dashboard data
+                await _firestoreService.SetDocumentAsync("DashboardStats", userId.ToString(), Data);
             }
             catch (Exception ex)
             {

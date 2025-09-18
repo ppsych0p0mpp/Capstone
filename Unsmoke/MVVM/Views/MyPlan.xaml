@@ -17,13 +17,15 @@
         <VerticalStackLayout>
                 <HorizontalStackLayout Spacing="120">
                     <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
-                            Margin="170,0,0,0"/>
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Margin="160,0,0,0"/>
                     <ImageButton Source="user"
-                                 HeightRequest="50"
-                                 WidthRequest="50"
-                                 Margin="0,10,0,0"
-                                 HorizontalOptions="End"
-                                 Command="{Binding GotoProfile}"/>
+                  HeightRequest="50"
+                  WidthRequest="50"
+                  Margin="-20,10,0,0"
+                  HorizontalOptions="End"
+                  Command="{Binding GotoProfile}"/>
                 </HorizontalStackLayout>
                 <Border Stroke="Black"
                     HeightRequest="190"

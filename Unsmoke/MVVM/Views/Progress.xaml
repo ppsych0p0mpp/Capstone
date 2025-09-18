@@ -21,13 +21,15 @@
             </Grid.RowDefinitions>
             <HorizontalStackLayout Spacing="120">
                 <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
-                        Margin="170,0,0,0"/>
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Margin="160,0,0,0"/>
                 <ImageButton Source="user"
-                         HeightRequest="50"
-                         WidthRequest="50"
-                         Margin="0,10,0,0"
-                         HorizontalOptions="End"
-                         Command="{Binding GotoProfile}"/>
+                  HeightRequest="50"
+                  WidthRequest="50"
+                  Margin="-20,10,0,0"
+                  HorizontalOptions="End"
+                  Command="{Binding GotoProfile}"/>
             </HorizontalStackLayout>
 
             <!--Item Comparison-->
@@ -156,7 +158,7 @@
                     <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                         <Image Source="peso" HeightRequest="50" WidthRequest="50"/>
                         <VerticalStackLayout>
-                            <Label Text="₱750"
+                            <Label Text="{Binding MoneySaved}"
                                    FontSize="24"
                                    FontAttributes="Bold"
                                    TextColor="White"/>
@@ -175,23 +177,23 @@
                     <!-- Daily Goal -->
                     <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
                         <Label Text="Daily savings goal" FontSize="12" TextColor="White" HorizontalOptions="StartAndExpand"/>
-                        <Label Text="₱50/₱50" FontSize="12" TextColor="White" HorizontalOptions="End"/>
+                        <Label Text="{Binding DailyGoalProgress, StringFormat='Progress: {0:P0}'}" FontSize="12" TextColor="White" HorizontalOptions="End"/>
                     </HorizontalStackLayout>
-                    <ProgressBar Progress="1" HeightRequest="6" ProgressColor="#FFD700" BackgroundColor="#555"/>
+                    <ProgressBar Progress="{Binding DailyGoalProgress}" HeightRequest="6" ProgressColor="#FFD700" BackgroundColor="#555"/>
 
                     <!-- Weekly Goal -->
                     <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
                         <Label Text="Weekly savings goal" FontSize="12" TextColor="White" HorizontalOptions="StartAndExpand"/>
-                        <Label Text="₱350/₱350" FontSize="12" TextColor="White" HorizontalOptions="End"/>
+                        <Label Text="{Binding WeeklyGoalProgress, StringFormat='Progress: {0:P0}'}" FontSize="12" TextColor="White" HorizontalOptions="End"/>
                     </HorizontalStackLayout>
-                    <ProgressBar Progress="1" HeightRequest="6" ProgressColor="#4CAF50" BackgroundColor="#555"/>
+                    <ProgressBar Progress="{Binding WeeklyGoalProgress}" HeightRequest="6" ProgressColor="#4CAF50" BackgroundColor="#555"/>
 
                     <!-- Monthly Goal -->
                     <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
                         <Label Text="Monthly savings goal" FontSize="12" TextColor="White" HorizontalOptions="StartAndExpand"/>
-                        <Label Text="₱750/₱1,500" FontSize="12" TextColor="White" HorizontalOptions="End"/>
+                        <Label Text="{Binding MonthlyGoalProgress, StringFormat='Progress: {0:P0}'}" FontSize="12" TextColor="White" HorizontalOptions="End"/>
                     </HorizontalStackLayout>
-                    <ProgressBar Progress="0.5" HeightRequest="6" ProgressColor="#2196F3" BackgroundColor="#555"/>
+                    <ProgressBar Progress="{Binding MonthlyGoalProgress}" HeightRequest="6" ProgressColor="#2196F3" BackgroundColor="#555"/>
                 </VerticalStackLayout>
             </Border>
 

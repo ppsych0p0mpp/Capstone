@@ -26,11 +26,13 @@
 
             <HorizontalStackLayout Spacing="120">
                 <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
-                       Margin="170,0,0,0"/>
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       Margin="160,0,0,0"/>
                 <ImageButton Source="user"
                              HeightRequest="50"
                              WidthRequest="50"
-                             Margin="0,10,0,0"
+                             Margin="-20,10,0,0"
                              HorizontalOptions="End"
                              Command="{Binding GotoProfile}"/>
             </HorizontalStackLayout>
@@ -156,8 +158,8 @@
                                 HorizontalOptions="Center"
                                 />
                         <!--Minus Button-->
-                        <ImageButton Source="minus" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
-                                     Margin="-210,30,0,10"
+                        <ImageButton Source="minus" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="30"
+                                     Margin="-160,30,20,10"
                                      HorizontalOptions="Start"/>
                         <!--Number of Cigarettes-->
                         <Label  Text="{Binding CigaretteToday}"
@@ -165,8 +167,8 @@
                                 TextColor="White"
                                 />
                         <!--Add button-->
-                        <ImageButton Source="plus"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
-                                     Margin="20,20,0,0"/>
+                        <ImageButton Source="plus"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="30"
+                                     Margin="40,20,-0,0"/>
                 </HorizontalStackLayout>
             </Border>
         </Grid>

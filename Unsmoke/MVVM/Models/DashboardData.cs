@@ -26,6 +26,8 @@ namespace Unsmoke.MVVM.Models
         //Today's data
         public int CigarettesSmokedToday { get; set; }
 
+        public double TimewithoutCigSeconds { get; set; }
+
         public DashboardData()
         {
             QuitDate = DateTime.UtcNow;

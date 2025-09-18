@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Unsmoke.Helper;
 using Unsmoke.MVVM.Models;
 using Unsmoke.MVVM.Views;
 using Unsmoke.Service;
@@ -53,7 +54,6 @@ namespace Unsmoke.MVVM.ViewModel
 
         private async Task AddPostAsync()
         {
-
             // Validation checks
             if (string.IsNullOrWhiteSpace(Content))
             {
@@ -72,9 +72,14 @@ namespace Unsmoke.MVVM.ViewModel
                 await Application.Current.MainPage.DisplayAlert("Error", "Please select a tag before posting.", "OK");
                 return;
             }
-            // Create Post object
+
             try
             {
+                // Get user info safely
+                var userId = SessionManager.CurrentUser?.UserID ?? "1";// fallback if no user is logged in
+
+                var userFullName = SessionManager.CurrentUser?.FullName ?? "Guest";
+
                 if (!string.IsNullOrWhiteSpace(EditingPostId))
                 {
                     // Update existing post
@@ -82,15 +87,14 @@ namespace Unsmoke.MVVM.ViewModel
                     {
                         Content = Content,
                         Tags = Selectedtags,
-                        // Optionally update DateModified or keep original DateCreated
+                        UserId = userId,
+                        FullName = userFullName,
                         DateCreated = DateTime.UtcNow
                     };
 
                     await _firestoreService.UpdateDocumentAsync("CommunityPosts", EditingPostId, updateObj);
-
                     await Application.Current.MainPage.DisplayAlert("Success", "Post updated.", "OK");
 
-                    // clear editing state
                     EditingPostId = null;
                 }
                 else
@@ -100,30 +104,28 @@ namespace Unsmoke.MVVM.ViewModel
                     {
                         Content = Content,
                         Tags = Selectedtags,
-                        UserId = 1,
+                        UserId = userId,
+                        FullName = userFullName,
                         DateCreated = DateTime.UtcNow
                     };
 
                     await _firestoreService.AddDocumentAsync("CommunityPosts", post);
-
                     await Application.Current.MainPage.DisplayAlert("Success", "Post created.", "OK");
                 }
 
-                // clear inputs
+                // Clear inputs
                 Content = string.Empty;
                 Selectedtags = null;
 
-                // navigate back to community (or AppShell if you use that)
-                Application.Current.MainPage = App.Services.GetRequiredService<Community>();
-
+                // Navigate back to community page
+                Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Failed to save post: {ex.Message}", "OK");
             }
-
-
         }
+
 
         public void LoadPostForEditing(Post post)
         {

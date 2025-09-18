@@ -5,10 +5,11 @@ namespace Unsmoke.MVVM.Views;
 
 public partial class Assessment : ContentPage
 {
-    private readonly AssessmentViewModel vm;
+    private readonly AssessmentViewModel? vm;
     public Assessment()
 	{
         InitializeComponent();
+
         vm = BindingContext as AssessmentViewModel;
     }
     protected override void OnAppearing()

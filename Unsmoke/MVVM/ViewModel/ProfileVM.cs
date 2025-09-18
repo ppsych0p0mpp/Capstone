@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Google.Cloud.Firestore.V1;
 using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,15 @@ using System.Windows.Input;
 using Unsmoke.Helper;
 using Unsmoke.MVVM.Models;
 using Unsmoke.MVVM.Views;
+using Unsmoke.Service;
+
+
 
 namespace Unsmoke.MVVM.ViewModel
 {
     public partial class ProfileVM : ObservableObject
     {
+        private readonly FirestoreService __firestoreService;
         private readonly CultureInfo pesoCulture = new CultureInfo("en-PH");
 
         public ICommand GotoDash { get; }
@@ -49,9 +54,10 @@ namespace Unsmoke.MVVM.ViewModel
 
         public ProfileVM()
         {
+            __firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
             GotoDash = new RelayCommand(Backto);
             Logout = new AsyncRelayCommand(LogoutUserAsync);
-            DisplayAssessment();
+            Task.Run(DisplayAssessmentAsync);
         }
 
         private void Backto()
@@ -61,15 +67,40 @@ namespace Unsmoke.MVVM.ViewModel
         }
 
         //Display Assessment Summary
-        private void DisplayAssessment()
+        // Display Assessment Summary
+        private async Task DisplayAssessmentAsync()
         {
-            FullName = $"{_user.FullName}";
+            if (SessionManager.CurrentUser == null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please login first to view your assessment.", "OK");
+                return;
+            }
+
+            // Get logged-in user
+            var userId = SessionManager.CurrentUser.UserID;
+            FullName = SessionManager.CurrentUser.FullName;
+
+            // Fetch assessment by userId field instead of document ID
+            var assessments = await __firestoreService.QueryDocumentsAsync<Models.Assessment>(
+                "assessments",
+                "UserID", userId // field name in Firestore
+            );
+
+            _assessment = assessments.FirstOrDefault();
+
+            if (_assessment == null)
+            {
+                await Application.Current.MainPage.DisplayAlert("No Data", "No assessment found for this user.", "OK");
+                return;
+            }
+
+            // Set assessment date
             AssessmentDate = _assessment.DateTaken.ToString("MMMM dd, yyyy");
 
-            // Calculate total days based on whether the user chose Years or Months
+            // Calculate total days
             double daysSmoked = _assessment.YearMonth == "Years"
                 ? _assessment.DurationOfSmoking * 365
-                : _assessment.DurationOfSmoking * 30;  // Approximation for months
+                : _assessment.DurationOfSmoking * 30;
 
             // Daily cost
             double dailyCost = _assessment.CigarettesPerDay * _assessment.CigaretteCost;
@@ -95,10 +126,12 @@ namespace Unsmoke.MVVM.ViewModel
                              $"Cost per Pack: {_assessment.CigaretteCost.ToString("C", pesoCulture)}\n" +
                              $"Money Spent: {_savings.totalSaved.ToString("C", pesoCulture)}\n" +
                              $"Daily Savings: {_savings.Daily.ToString("C", pesoCulture)}\n" +
-                             $"Monthly Savings: {_savings.Weekly.ToString("C", pesoCulture)}\n" +
+                             $"Weekly Savings: {_savings.Weekly.ToString("C", pesoCulture)}\n" +
+                             $"Monthly Savings: {_savings.Monthly.ToString("C", pesoCulture)}\n" +
                              $"Yearly Savings: {(_savings.Daily * 365).ToString("C", pesoCulture)}\n" +
                              $"Confidence Level: {_assessment.ConfidenceLevel}";
         }
+
 
         // Logout Command
         private async Task LogoutUserAsync()

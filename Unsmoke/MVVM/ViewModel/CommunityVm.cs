@@ -97,7 +97,7 @@ namespace Unsmoke.MVVM.ViewModel
                         Id = id,
                         Content = fields?["Content"]?["stringValue"]?.ToString(),
                         Tags = fields?["Tags"]?["stringValue"]?.ToString(),
-                        UserId = userId,
+                        UserId = userId.ToString(),
                         FullName = usersDict.ContainsKey(userId) ? usersDict[userId] : "Unknown User",
                         DateCreated = DateTime.TryParse(fields?["DateCreated"]?["timestampValue"]?.ToString(), out var date)
                                         ? date : DateTime.MinValue,

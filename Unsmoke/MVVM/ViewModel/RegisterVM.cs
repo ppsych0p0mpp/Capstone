@@ -98,12 +98,19 @@ namespace Unsmoke.MVVM.ViewModel
 
             try
             {
+                // Generate unique ID for the new user
+                var newUserId = Guid.NewGuid().ToString();
+
+                // Assign it to your user object (if user is your local model)
+                user.UserID = newUserId;
+
                 // Save user to Firestore
                 await _firestoreService.AddDocumentAsync("Users", new
                 {
+                    UserID = user.UserID,      // Matches model property name
                     FullName = user.FullName,
                     Username = user.Username,
-                    Password = hashedPassword
+                    Password = hashedPassword  // Make sure it's hashed
                 });
 
                 await Application.Current.MainPage.DisplayAlert("Success", "Account created successfully!", "OK");

@@ -8,7 +8,7 @@ namespace Unsmoke.MVVM.Models
 {
     public class Assessment
     {
-        public int AssessmentID { get; set; }
+        public string AssessmentID { get; set; }
         public string UserID { get; set; }
         public DateTime DateTaken { get; set; }
         public string Gender { get; set; }
