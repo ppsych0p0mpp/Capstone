@@ -52,7 +52,7 @@ namespace Unsmoke.MVVM.ViewModel
         //Create function for Create account here
         private async Task CreateAccountAsync()
         {
-            // Basic validation
+            // 1. Validate input
             if (string.IsNullOrWhiteSpace(user.FullName) ||
                 string.IsNullOrWhiteSpace(user.Username) ||
                 string.IsNullOrWhiteSpace(user.Password) ||
@@ -62,58 +62,54 @@ namespace Unsmoke.MVVM.ViewModel
                 return;
             }
 
-            // Check password strength
             if (!IsStrongPassword(user.Password))
             {
                 await Application.Current.MainPage.DisplayAlert("Weak Password",
-                    "Password must be at least 8 characters long and a number.", "OK");
+                    "Password must be at least 8 characters long and contain a number.", "OK");
                 return;
             }
-            // Check password match
+
             if (user.Password != user.ConfirmPassword)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Passwords do not match!", "OK");
                 return;
             }
-            // Check if username exists
-            var existingUser = await _firestoreService.GetDocumentsAsync("Users");
-            var data = JObject.Parse(existingUser);
-            var documents = data["documents"];
-
-            if (documents != null)
-            {
-                foreach (var doc in documents)
-                {
-                    var username = doc["fields"]?["Username"]?["stringValue"]?.ToString();
-                    if (username == user.Username)
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Error", "Username already exists!", "OK");
-                        return;
-                    }
-                }
-            }
-
-            // Hash the password before saving
-            string hashedPassword = HashPassword(user.Password);
 
             try
             {
-                // Generate unique ID for the new user
-                var newUserId = Guid.NewGuid().ToString();
+                // 2. Check if username already exists using query
+                var existingUsers = await _firestoreService.QueryDocumentsAsync<Users>(
+                    "Users",
+                    "Username",
+                    user.Username
+                );
 
-                // Assign it to your user object (if user is your local model)
-                user.UserID = newUserId;
-
-                // Save user to Firestore
-                await _firestoreService.AddDocumentAsync("Users", new
+                if (existingUsers.Any())
                 {
-                    UserID = user.UserID,      // Matches model property name
+                    await Application.Current.MainPage.DisplayAlert("Error", "Username already exists!", "OK");
+                    return;
+                }
+
+                // 3. Hash the password before saving
+                string hashedPassword = HashPassword(user.Password);
+
+                // 4. Create user object (without manual Guid)
+                var newUser = new Users
+                {
                     FullName = user.FullName,
                     Username = user.Username,
-                    Password = hashedPassword  // Make sure it's hashed
-                });
+                    Password = hashedPassword
+                };
+
+                // 5. Add user to Firestore -> Firestore will generate the document ID
+                var docId = await _firestoreService.AddDocumentWithIdAsync("Users", newUser);
+
+                // 6. Store Firestore document ID as UserID for later use (foreign key in assessment)
+                newUser.UserID = docId;
 
                 await Application.Current.MainPage.DisplayAlert("Success", "Account created successfully!", "OK");
+
+                // 7. Redirect to login page
                 Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
             }
             catch (Exception ex)
@@ -121,6 +117,7 @@ namespace Unsmoke.MVVM.ViewModel
                 await Application.Current.MainPage.DisplayAlert("Error", $"Failed to create account: {ex.Message}", "OK");
             }
         }
+
 
         // Password hashing using SHA256
         private string HashPassword(string password)

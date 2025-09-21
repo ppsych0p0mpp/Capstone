@@ -28,14 +28,9 @@
                 <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
                        FontAttributes="Bold"
                        FontSize="20"
-                       Margin="160,0,0,0"/>
-                <ImageButton Source="user"
-                             HeightRequest="50"
-                             WidthRequest="50"
-                             Margin="-20,10,0,0"
-                             HorizontalOptions="End"
-                             Command="{Binding GotoProfile}"/>
+                       Margin="160,10,0,0"/>
             </HorizontalStackLayout>
+            <Border Margin="-10"></Border>
 
             <Frame Grid.Row="1" BackgroundColor="#373737" HeightRequest="150" WidthRequest="355" Margin="20" CornerRadius="26" BorderColor="#f3f3f3"
                    HasShadow="True">

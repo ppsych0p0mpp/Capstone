@@ -24,23 +24,18 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         Margin="160,0,0,0"/>
-                <ImageButton Source="user"
-                  HeightRequest="50"
-                  WidthRequest="50"
-                  Margin="-20,10,0,0"
-                  HorizontalOptions="End"
-                  Command="{Binding GotoProfile}"/>
             </HorizontalStackLayout>
+            <Border Margin="0,50,0,0" HeightRequest="1"></Border>
 
             <!--Item Comparison-->
             <Label Text="Item Comparison"
-                   Margin="20,0,0,0"
+                   Margin="20,10,0,0"
                    Grid.Row="1"
                    FontSize="15"/>
 
             <Border HeightRequest="250" BackgroundColor="#2E2E2E" WidthRequest="370"
                     Grid.Row="1"
-                    Margin="40,30,40,0"
+                    Margin="40,40,40,0"
                     IsVisible="{Binding Itemcomp}">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="20"/>

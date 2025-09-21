@@ -19,15 +19,10 @@
                     <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
                             FontAttributes="Bold"
                             FontSize="20"
-                            Margin="160,0,0,0"/>
-                    <ImageButton Source="user"
-                  HeightRequest="50"
-                  WidthRequest="50"
-                  Margin="-20,10,0,0"
-                  HorizontalOptions="End"
-                  Command="{Binding GotoProfile}"/>
+                            Margin="160,10,0,0"/>
                 </HorizontalStackLayout>
-
+                <Border Margin="0,10,0,0"></Border>
+                
                 <Border HeightRequest="150" WidthRequest="370" BackgroundColor="#2E2E2E"
                         Margin="20"
                         Stroke="Black"
@@ -68,14 +63,16 @@
 
                 <Label Text="Community Feed"
                        Margin="20"/>
+
+               
                 <CollectionView ItemsSource="{Binding Posts}"
                                 HeightRequest="500"
                                 x:Name="PostCollectionView"
                                 >
-                    
+                 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                                    <Border Stroke="Black" StrokeThickness="1" Margin="5"
+                                <Border Stroke="Black" StrokeThickness="1" Margin="5"
                                         BackgroundColor="White"
                                         VerticalOptions="Center"
                                         WidthRequest="370"
@@ -146,7 +143,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                
+              
                 
             </VerticalStackLayout>
             

@@ -11,6 +11,7 @@ using Unsmoke.MVVM.Views;
 using Unsmoke.MVVM.Models;
 using System.Collections.ObjectModel;
 using Unsmoke.Service;
+using Unsmoke.Helper;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -129,7 +130,6 @@ namespace Unsmoke.MVVM.ViewModel
             ? ConfidenceIcons[SelectedConfidenceIndex].Text
             : string.Empty;
 
-        public ICommand GotoLogin { get; }
         public ICommand Show { get; }
         public ICommand Back { get; }
         public ICommand secondbtnQ { get; }
@@ -158,16 +158,11 @@ namespace Unsmoke.MVVM.ViewModel
             sixthbtnQ = new RelayCommand(FifthQ);
             seventhbtnQ = new RelayCommand(ResultQ);
             Back = new RelayCommand(BackQ);
-            GotoLogin = new RelayCommand(LoginP);
  
             _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
         }
         
-        private async void LoginP()
-        {
-           Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
-           return;
-        }
+        
 
         public async void NextQ()
         {
@@ -244,35 +239,47 @@ namespace Unsmoke.MVVM.ViewModel
             ShowNext();
         }
 
+        //Last button to save data
         public async void ResultQ()
         {
-            // Save assessment data to Firestore when reaching final page
             try
-            {   
+            {
+                if (SessionManager.CurrentUser == null)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Please login first before saving assessment.", "OK");
+                    return;
+                }
+
+                // Get the current user ID from session (this is the Firestore document ID)
+                var userId = SessionManager.CurrentUser.UserID;
+
+                // Prepare new assessment data
                 var newAssessment = new
                 {
-                    AssessmentID = Assessment.AssessmentID = Guid.NewGuid().ToString(),
-                    UserId = _user.UserID,
-                    DateTaken = Assessment.DateTaken = DateTime.UtcNow,
+                    AssessmentID = Guid.NewGuid().ToString(),   // Unique ID for the assessment
+                    UserID = userId,                            // Foreign key → Firestore document ID of the user
+                    DateTaken = DateTime.UtcNow,
                     Gender = Assessment.Gender,
-                    YearsOfSmoking = Assessment.DurationOfSmoking,
+                    DurationOfSmoking = Assessment.DurationOfSmoking,
                     YearMonth = Assessment.YearMonth,
                     CigarettesPerDay = Assessment.CigarettesPerDay,
                     CigaretteCost = Assessment.CigaretteCost,
                     ConfidenceLevel = Assessment.ConfidenceLevel
                 };
 
+                // Save to Firestore
                 await _firestoreService.AddDocumentAsync("assessments", newAssessment);
+
+                // Success message
                 await Application.Current.MainPage.DisplayAlert("Success", "Your assessment was saved!", "OK");
 
-                // Navigate to main page after saving
+                // Redirect to Dashboard/AppShell after saving
                 Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Failed to save assessment: " + ex.Message, "OK");
             }
-            return;
         }
 
         private int currentIndex = 1;

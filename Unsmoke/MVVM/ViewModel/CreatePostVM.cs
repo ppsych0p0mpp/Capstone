@@ -54,7 +54,7 @@ namespace Unsmoke.MVVM.ViewModel
 
         private async Task AddPostAsync()
         {
-            // Validation checks
+            // 1. Validate post content
             if (string.IsNullOrWhiteSpace(Content))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Post content cannot be empty.", "OK");
@@ -73,16 +73,22 @@ namespace Unsmoke.MVVM.ViewModel
                 return;
             }
 
+            // 2. Ensure user is logged in
+            if (SessionManager.CurrentUser == null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "You must be logged in to post.", "OK");
+                return;
+            }
+
             try
             {
-                // Get user info safely
-                var userId = SessionManager.CurrentUser?.UserID ?? "1";// fallback if no user is logged in
-
-                var userFullName = SessionManager.CurrentUser?.FullName ?? "Guest";
+                // Get user info
+                var userId = SessionManager.CurrentUser.UserID;
+                var userFullName = SessionManager.CurrentUser.FullName;
 
                 if (!string.IsNullOrWhiteSpace(EditingPostId))
                 {
-                    // Update existing post
+                    // 3. Update existing post
                     var updateObj = new
                     {
                         Content = Content,
@@ -93,15 +99,15 @@ namespace Unsmoke.MVVM.ViewModel
                     };
 
                     await _firestoreService.UpdateDocumentAsync("CommunityPosts", EditingPostId, updateObj);
-                    await Application.Current.MainPage.DisplayAlert("Success", "Post updated.", "OK");
-
+                    await Application.Current.MainPage.DisplayAlert("Success", "Post updated successfully.", "OK");
                     EditingPostId = null;
                 }
                 else
                 {
-                    // Create new post
+                    // 4. Create new post
                     var post = new Post
                     {
+                        Id = Guid.NewGuid().ToString(),
                         Content = Content,
                         Tags = Selectedtags,
                         UserId = userId,
@@ -110,21 +116,22 @@ namespace Unsmoke.MVVM.ViewModel
                     };
 
                     await _firestoreService.AddDocumentAsync("CommunityPosts", post);
-                    await Application.Current.MainPage.DisplayAlert("Success", "Post created.", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Success", "Post created successfully.", "OK");
                 }
 
-                // Clear inputs
+                // 5. Clear inputs after posting
                 Content = string.Empty;
                 Selectedtags = null;
 
-                // Navigate back to community page
-                Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
+                // 6. Navigate back to Community page inside AppShell
+               Application.Current.MainPage = App.Services.GetRequiredService<AppShell>(); ;
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Failed to save post: {ex.Message}", "OK");
             }
         }
+
 
 
         public void LoadPostForEditing(Post post)

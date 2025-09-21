@@ -19,14 +19,10 @@
                     <Label Text="Unsmoke"  HorizontalOptions="Center" VerticalTextAlignment="Center" TextColor="Black"
                             FontAttributes="Bold"
                             FontSize="20"
-                            Margin="160,0,0,0"/>
-                    <ImageButton Source="user"
-                  HeightRequest="50"
-                  WidthRequest="50"
-                  Margin="-20,10,0,0"
-                  HorizontalOptions="End"
-                  Command="{Binding GotoProfile}"/>
+                            Margin="160,10,0,0"/>
                 </HorizontalStackLayout>
+                <Border Margin="0,10,0,0" HeightRequest="1"></Border>
+
                 <Border Stroke="Black"
                     HeightRequest="190"
                     WidthRequest="370"

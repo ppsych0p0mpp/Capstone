@@ -11,7 +11,6 @@ namespace Unsmoke.Helper
     {
         public static Users CurrentUser { get; set; } = null;
 
-        public static string FullName { get; set; }
         public static bool IsLoggedIn => CurrentUser != null;
 
         
