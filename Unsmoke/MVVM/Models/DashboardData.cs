@@ -8,7 +8,8 @@ namespace Unsmoke.MVVM.Models
 {
     public class DashboardData
     {
-        public int UserID { get; set; }//Foreign Key
+        public string UserID { get; set; }//Foreign Key
+        public string AssessmentID { get; set; }//Foreign Key
 
         //Smoking journey info
         public string SmokingLevel { get; set; }

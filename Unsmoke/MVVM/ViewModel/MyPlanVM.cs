@@ -43,7 +43,6 @@ namespace Unsmoke.MVVM.ViewModel
 
         //Commands
         public ICommand OpenLinkCommand { get; set; }
-        public ICommand GotoProfile { get; }
 
         public MyPlanVM()
         {
@@ -127,36 +126,9 @@ namespace Unsmoke.MVVM.ViewModel
             };
 
             OpenLinkCommand = new Command<string>(async (url) => await Launcher.OpenAsync(url));
-            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
         }
 
-        private async Task ToProfileAsync()
-        {
-
-            //Check if user is logged in
-            var isLoggedIn = SessionManager.CurrentUser != null;
-
-            if (!isLoggedIn)
-            {
-                // Show alert with OK and Cancel
-                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
-                    "Login Required",
-                    "Please login or register to access your profile.",
-                    "Login",
-                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
-
-                if (goToLogin)
-                {
-                    // Navigate to login page if user chooses "Login"
-                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
-                }
-
-                return; // Exit method if user cancels
-            }
-
-            // If logged in, proceed to ProfilePage
-            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
-        }
+        
         private void UpdateTipOfTheDay()
         {
             int dayIndex = DateTime.Now.DayOfYear % dailyTips.Count;

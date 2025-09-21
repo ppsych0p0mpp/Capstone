@@ -50,13 +50,13 @@ namespace Unsmoke.MVVM.ViewModel
             EyeIcon = IsPassword ? "eyeclose.svg" : "eyeopen.svg";
             IsPassword = !IsPassword;
         }
+
         // Login function with validations
         private async Task LoginAsync()
         {
             if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Please enter both username and password.", "OK");
-                
                 return;
             }
 
@@ -77,28 +77,55 @@ namespace Unsmoke.MVVM.ViewModel
                 {
                     var username = doc["fields"]?["Username"]?["stringValue"]?.ToString();
                     var passwordHash = doc["fields"]?["Password"]?["stringValue"]?.ToString();
+                    var fullName = doc["fields"]?["FullName"]?["stringValue"]?.ToString();
 
-                    // Compare username
+                    // Get Firestore document ID as UserID (foreign key)
+                    var nameToken = doc["name"]?.ToString();
+                    string userId = null;
+                    if (!string.IsNullOrEmpty(nameToken))
+                    {
+                        var parts = nameToken.Split('/');
+                        userId = parts.LastOrDefault(); // actual Firestore document ID
+                    }
+
+                    // Match username
                     if (username == user.Username)
                     {
-                        // Verify password hash
                         if (VerifyPassword(user.Password, passwordHash))
                         {
+                            // Store session with Firestore Document ID
                             SessionManager.CurrentUser = new Users
                             {
-                                UserID = user.UserID, // you'll get this from Firestore data
-                                FullName = User.FullName,
-                                Username = User.Username
+                                UserID = userId,
+                                FullName = fullName,
+                                Username = username
                             };
 
-                            await Application.Current.MainPage.DisplayAlert("Success", "Login successful!", "OK");
-                            Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
+                            // Check if this user already has an assessment using UserID as foreign key
+                            var assessments = await _firestoreService.QueryDocumentsAsync<Models.Assessment>(
+                                "assessments",
+                                "UserID",
+                                userId
+                            );
+                            if (assessments == null || !assessments.Any())
+                            {
+                                // No assessment → ask to take assessment first
+                                await Application.Current.MainPage.DisplayAlert("Welcome", "Please complete your first assessment.", "OK");
+                                Application.Current.MainPage = App.Services.GetRequiredService<Views.Assessment>();
+                            }
+                            else
+                            {
+                                // Assessment exists → go to dashboard
+                                await Application.Current.MainPage.DisplayAlert("Success", "Login successful!", "OK");
+                                Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
+                            }
+
                             return;
                         }
                         else
                         {
                             await Application.Current.MainPage.DisplayAlert("Error", "Incorrect password.", "OK");
-                            ClearFields();
+                            user.Password = string.Empty;
                             return;
                         }
                     }
@@ -110,9 +137,10 @@ namespace Unsmoke.MVVM.ViewModel
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Login failed: {ex.Message}", "OK");
+                ClearFields();
             }
-           
         }
+
 
         // Password verification (hash)
         private bool VerifyPassword(string plainPassword, string storedHash)

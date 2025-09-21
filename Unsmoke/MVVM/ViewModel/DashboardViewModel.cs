@@ -35,8 +35,6 @@ namespace Unsmoke.MVVM.ViewModel
         private Models.Assessment _assessment = new Models.Assessment();
         public ICommand AddCigarette { get;}
         public ICommand MinusCigarette { get; }
-        public ICommand LoadDashboardDataCommand { get; }
-        public ICommand GotoProfile { get; }
 
         private readonly IDispatcherTimer _timer;
 
@@ -45,6 +43,7 @@ namespace Unsmoke.MVVM.ViewModel
             _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
             Data = new DashboardData
             {
+                TimewithoutCig = TimeSpan.Zero,
                 CigarettesSmokedToday = 0,
                 CigarettedAvoided = 0,
                 MoneySaved = 0,
@@ -54,9 +53,7 @@ namespace Unsmoke.MVVM.ViewModel
 
             AddCigarette = new RelayCommand(AddCigaretteAction);
             MinusCigarette = new RelayCommand(MinusCigaretteAction);
-            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
-            LoadDashboardDataCommand = new AsyncRelayCommand(LoadDashboardDataAsync);
-
+            Task.Run(LoadDashboardDataAsync);
             // MAUI timer
             _timer = Application.Current!.Dispatcher.CreateTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);   // update every second
@@ -80,44 +77,61 @@ namespace Unsmoke.MVVM.ViewModel
         {
             try
             {
-                if (string.IsNullOrEmpty(_assessmentDocId)) return;
+                var userId = SessionManager.CurrentUser?.UserID;
+                if (string.IsNullOrEmpty(userId)) return;
 
-                var data = await _firestoreService.GetDocumentByIdAsync<DashboardData>("DashboardStats", _assessmentDocId);
+                // Load document using userId as the key
+                var data = await _firestoreService.GetDocumentByIdAsync<DashboardData>("DashboardStats", userId);
+
                 if (data != null)
                 {
+                    // Document found → load values
                     Data = data;
                     lastSmokeTime = data.QuitDate;
-                    RaiseElapsedChanges();
                 }
+                else
+                {
+                    // No document yet → initialize new dashboard data
+                    Data = new DashboardData
+                    {
+                        UserID = userId,
+                        QuitDate = DateTime.UtcNow,
+                        CigarettesSmokedToday = 0,
+                        CigarettedAvoided = 0,
+                        MoneySaved = 0,
+                        LifeTimeSaved = 0
+                    };
+
+                    // Save immediately so Firestore always has the document
+                    await SaveDashboardDataAsync();
+                }
+
+                RaiseElapsedChanges();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading dashboard: {ex.Message}");
             }
         }
+
         private async Task SaveDashboardDataAsync()
         {
             try
             {
-                var userId = SessionManager.CurrentUser?.UserID ?? 0;
-                if (userId == 0) return;
+                var userId = SessionManager.CurrentUser?.UserID;
+                if (string.IsNullOrEmpty(userId)) return;
 
-                var saveData = new
-                {
-                    CigarettesSmokedToday = Data.CigarettesSmokedToday,
-                    CigarettedAvoided = Data.CigarettedAvoided,
-                    MoneySaved = Data.MoneySaved,
-                    LifeTimeSaved = Data.LifeTimeSaved,
-                    LastSmokeTime = lastSmokeTime
-                };
+                Data.UserID = userId;
 
-                await _firestoreService.UpdateDocumentAsync("DashboardStats", userId.ToString(), saveData);
+                // Create or Update with same ID
+                await _firestoreService.CreateOrUpdateDocumentAsync("DashboardStats", userId, Data);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error saving dashboard: {ex.Message}");
             }
         }
+
         private void AddCigaretteAction()
         {
             addsmoke = Data.CigarettesSmokedToday++;
@@ -145,23 +159,29 @@ namespace Unsmoke.MVVM.ViewModel
         }
 
         //Add a funtion for time when click add smoke it will revert back the time to zero.
+        private DateTime _lastSaveTime = DateTime.MinValue;
+
         private void UpdateElapsed()
         {
-
             Data.TimewithoutCig = DateTime.Now - lastSmokeTime;
+
             // When 24 hours passed without smoking
             if (Data.TimewithoutCig.TotalHours >= 24 && !hasCountedAvoidedToday)
             {
-                Data.CigarettedAvoided = _assessment.CigarettesPerDay; // Increment by daily average
+                Data.CigarettedAvoided = _assessment.CigarettesPerDay;
                 hasCountedAvoidedToday = true;
 
-                // Example: Money saved logic
-                Data.MoneySaved = _assessment.CigaretteCost;// Increment by daily cost
+                Data.MoneySaved = _assessment.CigaretteCost;
+                Data.LifeTimeSaved += (Data.CigarettesSmokedToday * 11) / 1440.0;
 
-                // Example: Life time saved (e.g., 11 min per cigarette)
-                Data.LifeTimeSaved += (Data.CigarettesSmokedToday * 11) / 1440.0; // Days saved
+                _ = SaveDashboardDataAsync();
+            }
 
-                _ = SaveDashboardDataAsync(); // Save progress
+            // Auto-save every 60 seconds only
+            if ((DateTime.Now - _lastSaveTime).TotalSeconds >= 60)
+            {
+                _lastSaveTime = DateTime.Now;
+                _ = SaveDashboardDataAsync();
             }
 
             RaiseElapsedChanges();
@@ -174,36 +194,6 @@ namespace Unsmoke.MVVM.ViewModel
             OnPropertyChanged(nameof(Seconds));
             OnPropertyChanged(nameof(ElapsedFormatted));
         }
-
-        private async Task ToProfileAsync()
-        {
-            //Check if user is logged in
-            var isLoggedIn = SessionManager.CurrentUser != null;
-
-            if (!isLoggedIn)
-            {
-                // Show alert with OK and Cancel
-                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
-                    "Login Required",
-                    "Please login or register to access your profile.",
-                    "Login",
-                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
-
-                if (goToLogin)
-                {
-                    // Navigate to login page if user chooses "Login"
-                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
-                }
-
-                return; // Exit method if user cancels
-            }
-
-            // If logged in, proceed to ProfilePage
-            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
-        }
-
-        
-
 
 
     }

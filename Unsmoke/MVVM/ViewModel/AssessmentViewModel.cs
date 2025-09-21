@@ -11,6 +11,7 @@ using Unsmoke.MVVM.Views;
 using Unsmoke.MVVM.Models;
 using System.Collections.ObjectModel;
 using Unsmoke.Service;
+using Unsmoke.Helper;
 
 namespace Unsmoke.MVVM.ViewModel
 {
@@ -18,6 +19,9 @@ namespace Unsmoke.MVVM.ViewModel
     public partial class AssessmentViewModel : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
+
+        [ObservableProperty]
+        private Users _user = new Users();
 
         [ObservableProperty]
         private Models.Savings _savings = new Models.Savings();
@@ -126,9 +130,6 @@ namespace Unsmoke.MVVM.ViewModel
             ? ConfidenceIcons[SelectedConfidenceIndex].Text
             : string.Empty;
 
-        public ICommand ContinueCommand { get; }
-
-
         public ICommand Show { get; }
         public ICommand Back { get; }
         public ICommand secondbtnQ { get; }
@@ -161,12 +162,12 @@ namespace Unsmoke.MVVM.ViewModel
             _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
         }
         
-
+        
 
         public async void NextQ()
         {
             //First Question Validation
-            if (string.IsNullOrEmpty(assessment.Gender))
+            if (string.IsNullOrEmpty(Assessment.Gender))
             {
                 await Application.Current.MainPage.DisplayAlert("Required", "Please select your gender.", "OK");
                 return;
@@ -181,7 +182,7 @@ namespace Unsmoke.MVVM.ViewModel
         public async void SecondQ()
         {
             //Second Question Validation
-            if (assessment.DurationOfSmoking <= 0 || string.IsNullOrEmpty(assessment.DurationOfSmoking.ToString()) || string.IsNullOrEmpty(assessment.YearMonth)
+            if (Assessment.DurationOfSmoking <= 0 || string.IsNullOrEmpty(Assessment.DurationOfSmoking.ToString()) || string.IsNullOrEmpty(assessment.YearMonth)
                 )
             {
                 await Application.Current.MainPage.DisplayAlert("Required", "Please enter how long you’ve been smoking.", "OK");
@@ -196,7 +197,7 @@ namespace Unsmoke.MVVM.ViewModel
         public async void ThirdQ()
         {
             //Third Question Validation
-            if (assessment.CigarettesPerDay <= 0 || string.IsNullOrEmpty(assessment.CigarettesPerDay.ToString()))
+            if (Assessment.CigarettesPerDay <= 0 || string.IsNullOrEmpty(Assessment.CigarettesPerDay.ToString()))
             {
                 await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarettes per day.", "OK");
                 return;
@@ -210,7 +211,7 @@ namespace Unsmoke.MVVM.ViewModel
         public async void FourthQ()
         {
             //Fourth Question Validation
-            if (assessment.CigaretteCost <= 0 || string.IsNullOrEmpty(assessment.CigaretteCost.ToString()))
+            if (Assessment.CigaretteCost <= 0 || string.IsNullOrEmpty(Assessment.CigaretteCost.ToString()))
             {
                 await Application.Current.MainPage.DisplayAlert("Required", "Please enter your cigarette cost.", "OK");
                 return;
@@ -232,39 +233,53 @@ namespace Unsmoke.MVVM.ViewModel
             }
 
             // Store the selected confidence text in the assessment
-            assessment.ConfidenceLevel = ConfidenceIcons[SelectedConfidenceIndex].Text;
+            Assessment.ConfidenceLevel = ConfidenceIcons[SelectedConfidenceIndex].Text;
 
             // If validation passes, go to next question
             ShowNext();
         }
 
+        //Last button to save data
         public async void ResultQ()
         {
-            // Save assessment data to Firestore when reaching final page
             try
             {
+                if (SessionManager.CurrentUser == null)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Please login first before saving assessment.", "OK");
+                    return;
+                }
+
+                // Get the current user ID from session (this is the Firestore document ID)
+                var userId = SessionManager.CurrentUser.UserID;
+
+                // Prepare new assessment data
                 var newAssessment = new
                 {
-                    DateTaken = Assessment.DateTaken = DateTime.UtcNow,
+                    AssessmentID = Guid.NewGuid().ToString(),   // Unique ID for the assessment
+                    UserID = userId,                            // Foreign key → Firestore document ID of the user
+                    DateTaken = DateTime.UtcNow,
                     Gender = Assessment.Gender,
-                    YearsOfSmoking = Assessment.DurationOfSmoking,
+                    DurationOfSmoking = Assessment.DurationOfSmoking,
                     YearMonth = Assessment.YearMonth,
                     CigarettesPerDay = Assessment.CigarettesPerDay,
                     CigaretteCost = Assessment.CigaretteCost,
                     ConfidenceLevel = Assessment.ConfidenceLevel
                 };
 
+                // Save to Firestore
                 await _firestoreService.AddDocumentAsync("assessments", newAssessment);
+
+                // Success message
                 await Application.Current.MainPage.DisplayAlert("Success", "Your assessment was saved!", "OK");
 
-                // Navigate to main page after saving
+                // Redirect to Dashboard/AppShell after saving
                 Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Failed to save assessment: " + ex.Message, "OK");
             }
-            return;
         }
 
         private int currentIndex = 1;
@@ -327,14 +342,13 @@ namespace Unsmoke.MVVM.ViewModel
                     await Task.Yield();
 
                     // Wait for the GIF to "play" (adjust duration as needed)
-                    // If your gif loops, use a duration that makes sense (3000ms = 3s)
                     await Task.Delay(6000);
 
                     // After delay, stop animation and show check icon
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         IsLoadingAnimationPlaying = false;
-                        CurrentImage = "check.svg"; 
+                        CurrentImage = "check.svg";
                         HeaderText = "Assessment Complete!";
                         ShowFinishButton = true;
                     });

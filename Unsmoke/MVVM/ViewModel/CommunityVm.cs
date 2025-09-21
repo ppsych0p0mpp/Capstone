@@ -30,7 +30,6 @@ namespace Unsmoke.MVVM.ViewModel
 
         public ICommand ShowEditDeleteAction { get; }
 
-        public ICommand GotoProfile { get; }
 
         public ObservableCollection<Post> Posts { get; } = new();
 
@@ -42,7 +41,6 @@ namespace Unsmoke.MVVM.ViewModel
             DeletePostCommand = new AsyncRelayCommand<Post>(DeletePostAsync);
             EditPostCommand = new AsyncRelayCommand<Post>(EditPostAsync);
             ShowEditDeleteAction = new RelayCommand(showDeleteEdit);
-            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
 
             Task.Run(LoadPostsAsync);
         }
@@ -54,60 +52,36 @@ namespace Unsmoke.MVVM.ViewModel
 
         private async Task LoadPostsAsync()
         {
-            Posts.Clear();
-            var json = await _firestoreService.GetDocumentsAsync("CommunityPosts");
-
-            var data = JObject.Parse(json);
-            var documents = data["documents"];
-
-            if (documents != null)
+            try
             {
-                // Load all users once to avoid multiple requests per post
-                var usersJson = await _firestoreService.GetDocumentsAsync("Users");
-                var usersData = JObject.Parse(usersJson);
-                var usersDict = new Dictionary<int, string>();
+                var posts = await _firestoreService.GetDocumentsAsync<Post>("CommunityPosts");
 
-                // Build dictionary of UserID -> FullName
-                var userDocs = usersData["documents"];
-                if (userDocs != null)
+                var users = await _firestoreService.GetDocumentsWithIdAsync<Users>("Users");
+
+                var userDictionary = users.ToDictionary(u => u.UserID, u => u.FullName);
+
+                var visiblePosts = posts
+                    .Where(p => !p.IsDeleted) //Skip deleted posts
+                    .OrderByDescending(p => p.DateCreated)
+                    .ToList();
+
+                foreach (var post in visiblePosts)
                 {
-                    foreach (var userDoc in userDocs)
-                    {
-                        var userFields = userDoc["fields"];
-                        var userIdStr = userFields?["UserID"]?["integerValue"]?.ToString();
-                        var fullName = userFields?["FullName"]?["stringValue"]?.ToString();
-
-                        if (int.TryParse(userIdStr, out int userId))
-                        {
-                            usersDict[userId] = fullName ?? "Unknown User";
-                        }
-                    }
+                    if (!string.IsNullOrEmpty(post.UserId) && userDictionary.ContainsKey(post.UserId))
+                        post.FullName = userDictionary[post.UserId];
+                    else
+                        post.FullName = "Unknown User"; // fallback if user not found
                 }
 
-                // Process posts
-                foreach (var doc in documents)
+                Posts.Clear();
+                foreach (var post in visiblePosts)
                 {
-                    var fields = doc["fields"];
-                    var id = doc["name"].ToString().Split('/').Last();
-
-                    var userId = int.TryParse(fields?["UserId"]?["integerValue"]?.ToString(), out var uid) ? uid : 0;
-
-                    var post = new Post
-                    {
-                        Id = id,
-                        Content = fields?["Content"]?["stringValue"]?.ToString(),
-                        Tags = fields?["Tags"]?["stringValue"]?.ToString(),
-                        UserId = userId,
-                        FullName = usersDict.ContainsKey(userId) ? usersDict[userId] : "Unknown User",
-                        DateCreated = DateTime.TryParse(fields?["DateCreated"]?["timestampValue"]?.ToString(), out var date)
-                                        ? date : DateTime.MinValue,
-                        IsDeleted = bool.TryParse(fields?["IsDeleted"]?["booleanValue"]?.ToString(), out var deleted) && deleted
-                    };
-
-                    // Only add if NOT deleted
-                    if (!post.IsDeleted)
-                        Posts.Add(post);
+                    Posts.Add(post);
                 }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Failed to load posts: {ex.Message}", "OK");
             }
         }
 
@@ -125,7 +99,14 @@ namespace Unsmoke.MVVM.ViewModel
 
             if (post == null) return;
 
-            // Ask user to confirm deletion
+            // ✅ Check if current user is the owner of the post
+            if (post.UserId != SessionManager.CurrentUser?.UserID)
+            {
+               
+                return;
+            }
+
+            // Confirm deletion
             bool confirm = await Application.Current.MainPage.DisplayAlert(
                 "Confirm Delete",
                 "Are you sure you want to delete this post?",
@@ -133,19 +114,18 @@ namespace Unsmoke.MVVM.ViewModel
                 "No"
             );
 
-            if (!confirm)
-                return; // If user clicked "No", do nothing
+            if (!confirm) return;
 
             // Set IsDeleted = true in Firestore
             var updateData = new { IsDeleted = true };
             await _firestoreService.UpdateDocumentAsync("CommunityPosts", post.Id, updateData);
 
-            // Remove from local collection
+            // Remove from local list
             Posts.Remove(post);
 
             await Application.Current.MainPage.DisplayAlert("Deleted", "Post has been deleted successfully.", "OK");
         }
-        //function when Edit
+
         private async Task EditPostAsync(Post post)
         {
             if (!SessionManager.IsLoggedIn)
@@ -156,56 +136,47 @@ namespace Unsmoke.MVVM.ViewModel
                     "OK");
                 return;
             }
+
             if (post == null) return;
+
+            // ✅ Check if current user is the owner of the post
+            if (post.UserId != SessionManager.CurrentUser?.UserID)
+            {
+                
+                return;
+            }
 
             // Navigate to edit page with post data
             var editPage = App.Services.GetRequiredService<CreatePost>();
             (editPage.BindingContext as CreatePostVM)?.LoadPostForEditing(post);
 
-            //Add validation for editing post
-
             Application.Current.MainPage = editPage;
         }
-        
+
+
         private async void Addpost()
         {
-            if (!SessionManager.IsLoggedIn)
+            try
             {
-                await Application.Current.MainPage.DisplayAlert(
-                    "Login Required",
-                    "You need to log in or register before creating a post.",
-                    "OK");
-                return;
-            }
-            Application.Current.MainPage = App.Services.GetRequiredService<CreatePost>();
-            return;
-        }
-        private async Task ToProfileAsync()
-        {
-            //Check if user is logged in
-            var isLoggedIn = SessionManager.CurrentUser != null;
-
-            if (!isLoggedIn)
-            {
-                // Show alert with OK and Cancel
-                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
-                    "Login Required",
-                    "Please login or register to access your profile.",
-                    "Login",
-                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
-
-                if (goToLogin)
+                // Check if user is logged in
+                if (!SessionManager.IsLoggedIn || SessionManager.CurrentUser == null)
                 {
-                    // Navigate to login page if user chooses "Login"
-                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Login Required",
+                        "You need to log in or register before creating a post.",
+                        "OK");
+                    return;
                 }
 
-                return; // Exit method if user cancels
+                // Navigate to CreatePost page directly
+                Application.Current.MainPage = App.Services.GetRequiredService<CreatePost>();
             }
-
-            // If logged in, proceed to ProfilePage
-            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Failed to open post page: {ex.Message}", "OK");
+            }
         }
+       
 
 
     }

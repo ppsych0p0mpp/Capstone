@@ -42,12 +42,9 @@
 
 
         <Frame BackgroundColor="#faf9f6" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
-               Margin="0,100,0,0">
+               Margin="0,100,0,0"
+               HeightRequest="1000">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
                 <VerticalStackLayout>
                         <Image Source="healthy"
                                IsAnimationPlaying="True"
@@ -76,9 +73,9 @@
                             FontAttributes="Bold"
                             Margin="10,130,0,0"
                             Command="{Binding Show}"/>
-                </VerticalStackLayout>
+                    
 
-                
+                </VerticalStackLayout>
             </Grid>
         </Frame>
         

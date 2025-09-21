@@ -64,7 +64,6 @@ namespace Unsmoke.MVVM.ViewModel
         public ICommand ItemComp { get; }
         public ICommand AddItemCommand { get; }
         public ICommand PickImageCommand { get; }
-        public ICommand GotoProfile { get; }
 
         //Constructor
         public ProgressVM()
@@ -85,7 +84,6 @@ namespace Unsmoke.MVVM.ViewModel
             ItemComp = new RelayCommand(ShowItemComparison);
             AddItemCommand = new AsyncRelayCommand(AddItemAsync);
             PickImageCommand = new AsyncRelayCommand(PickImageAsync);
-            GotoProfile = new AsyncRelayCommand(ToProfileAsync);
 
             Task.Run(LoadDashboardDataAsync);
         }
@@ -143,6 +141,7 @@ namespace Unsmoke.MVVM.ViewModel
             // Create item object
             var newItem = new Item
             {
+                UserId = SessionManager.CurrentUser?.UserID,
                 ItemName = ItemName,
                 ItemPrice = price,
                 Image = image // Placeholder, implement image handling as needed
@@ -157,54 +156,31 @@ namespace Unsmoke.MVVM.ViewModel
             await Application.Current.MainPage.DisplayAlert("Success", "Item Added!", "OK");
         }
 
-        private async Task ToProfileAsync()
-        {
-
-            //Check if user is logged in
-            var isLoggedIn = SessionManager.CurrentUser != null;
-
-            if (!isLoggedIn)
-            {
-                // Show alert with OK and Cancel
-                bool goToLogin = await Application.Current.MainPage.DisplayAlert(
-                    "Login Required",
-                    "Please login or register to access your profile.",
-                    "Login",
-                    "Cancel"); // returns true if "Login" pressed, false if "Cancel" pressed
-
-                if (goToLogin)
-                {
-                    // Navigate to login page if user chooses "Login"
-                    Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
-                }
-
-                return; // Exit method if user cancels
-            }
-
-            // If logged in, proceed to ProfilePage
-            Application.Current.MainPage = App.Services.GetRequiredService<ProfilePage>();
-        }
+       
 
         private async Task LoadDashboardDataAsync()
         {
             try
             {
-                // Get the dashboard data for the current user
-                var docId = SessionManager.CurrentUser?.UserID.ToString();
+                // Get the dashboard data for the current user  
+                var docId = SessionManager.CurrentUser?.UserID;
                 if (string.IsNullOrEmpty(docId)) return;
 
-                var dashboard = await _firestoreService.GetDocumentByIdAsync<DashboardData>("DashboardStats", docId);
+                var dashboardList = await _firestoreService.QueryDocumentsAsync<DashboardData>("DashboardStats", "UserID", docId);
+                if (dashboardList == null || !dashboardList.Any()) return;
+
+                var dashboard = dashboardList.FirstOrDefault(); // Assuming you want the first item in the list  
                 if (dashboard == null) return;
 
                 Data = dashboard;
                 MoneySaved = dashboard.MoneySaved;
 
-                // Update goal progress
-                DailyGoalProgress = MoneySaved / 50;    
-                WeeklyGoalProgress = MoneySaved / 350;  
+                // Update goal progress  
+                DailyGoalProgress = MoneySaved / 50;
+                WeeklyGoalProgress = MoneySaved / 350;
                 MonthlyGoalProgress = MoneySaved / 1500;
 
-                // Check and unlock achievements
+                // Check and unlock achievements  
                 CheckAchievements();
             }
             catch (Exception ex)
