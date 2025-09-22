@@ -61,7 +61,8 @@
 
                 <Label Text="Post Details"
                        FontSize="20"
-                       Margin="30,20,0,0"/>
+                       Margin="30,20,0,0"
+                       TextColor="Black"/>
 
                 <Border WidthRequest="370"
                         HeightRequest="200"

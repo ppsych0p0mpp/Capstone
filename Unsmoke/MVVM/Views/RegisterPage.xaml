@@ -5,7 +5,7 @@
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
              NavigationPage.HasNavigationBar="False"
              Title="RegisterPage"
-             BackgroundColor="#f4fbf8"
+             BackgroundColor="#faf9f6"
              >
     <ContentPage.BindingContext>
         <vm:RegisterVM/>
@@ -19,6 +19,7 @@
             <Label Text=" Join Unsmoke "
                    HorizontalOptions="Center"
                    FontSize="30"
+                   TextColor="Black"
                    FontAttributes="Bold"
                    Margin="0,-40,0,0"/>
             <Label Text=" Start your smoke-free journey today  "
@@ -28,6 +29,7 @@
 
             <Label Text="Full Name"
                     FontSize="15"
+                    TextColor="Black"
                     FontAttributes="Bold"
                     Margin="30,0,0,0"/>
             <Border HeightRequest="50"
@@ -40,11 +42,13 @@
                 <Entry Placeholder="Enter your Full Name"
                         WidthRequest="300"
                         HeightRequest="80"
+                        TextColor="Black"
                         FontSize="18"
                        Text="{Binding User.FullName}"/>
             </Border>
 
             <Label Text="Username"
+                   TextColor="Black"
                     FontSize="15"
                     FontAttributes="Bold"
                     Margin="30,0,0,0"/>
@@ -59,12 +63,14 @@
                         WidthRequest="300"
                         HeightRequest="80"
                         FontSize="18"
+                    TextColor="Black"
                        Text="{Binding User.Username}"/>
             </Border>
                  <Label Text="Password"
-                    FontSize="15"
-                    FontAttributes="Bold"
-                    Margin="30,0,0,0"/>
+                       TextColor="Black"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        Margin="30,0,0,0"/>
                  <Border HeightRequest="50"
                      WidthRequest="350"
                      Stroke="Black"
@@ -76,6 +82,7 @@
                             <Entry Placeholder="Enter your Password"
                                    WidthRequest="300"
                                    HeightRequest="80"
+                                    TextColor="Black"
                                    FontSize="18"
                                    Text="{Binding User.Password}"
                                    IsPassword="{Binding IsPassword, Mode=TwoWay}"
@@ -101,6 +108,7 @@
                              <Entry Placeholder="Confirm your Password"
                                    WidthRequest="300"
                                    HeightRequest="80"
+                                   TextColor="Black"
                                    FontSize="18"
                                    Text="{Binding User.ConfirmPassword}"
                                    IsPassword="{Binding IsPassword, Mode=TwoWay}"
@@ -123,9 +131,11 @@
                      CornerRadius="30"
                     Command="{Binding RegisterCommand}"/>
             <Label Text="Already have an account?"
+                   TextColor="Black"
                     HorizontalOptions="Center"
                     Margin="-70,-10,0,0"/>
             <Label Text="Sign In"
+                   TextColor="Black"
                     FontAttributes="Bold"
                     HorizontalOptions="Center"
                    TextDecorations="Underline"

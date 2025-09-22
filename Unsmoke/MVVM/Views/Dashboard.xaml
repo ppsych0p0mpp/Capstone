@@ -57,18 +57,18 @@
             <Frame Grid.Row="2" HeightRequest="150" WidthRequest="350" Margin="0,30,0,0" BackgroundColor="#FFC000" CornerRadius="26" BorderColor="#f3f3f3"
                    HasShadow="True">
                 <Grid>
-                    <Label Text="Time without a cigarette" Margin="80,0,10,0"/>
+                    <Label Text="Time without a cigarette" Margin="80,0,10,0" TextColor="Black"/>
                     
                     <!--Tthis the Time  MM/dd/hh/mm-->
-                    <Label Text="{Binding ElapsedFormatted}" Margin="20,20,0,0" FontSize="35" FontAttributes="Bold" CharacterSpacing="3.5"/>
+                    <Label Text="{Binding ElapsedFormatted}" Margin="20,20,0,0" FontSize="35" FontAttributes="Bold" CharacterSpacing="3.5" TextColor="Black"/>
                     
-                    <Label Text="Days" Margin="33,75,0,0"/>
+                    <Label Text="Days" Margin="33,75,0,0" TextColor="Black"/>
 
-                    <Label Text="Hours" Margin="100,75,0,0"/>
+                    <Label Text="Hours" Margin="100,75,0,0" TextColor="Black"/>
 
-                    <Label Text="Minutes" Margin="165,75,0,0"/>
+                    <Label Text="Minutes" Margin="165,75,0,0" TextColor="Black"/>
 
-                    <Label Text="Seconds" Margin="235,75,0,0"/>
+                    <Label Text="Seconds" Margin="235,75,0,0" TextColor="Black"/>
                 </Grid>
 
             </Frame>
@@ -85,14 +85,14 @@
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
                         <Grid>
-                            <Label Text="Cigarettes&#10;  Avoided" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,15" FontSize="14"/>
+                            <Label Text="Cigarettes&#10;  Avoided" HorizontalOptions="Center" VerticalOptions="Start" Margin="15,15" FontSize="14" TextColor="Black"/>
                             <Image Source="cigarette" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.CigarettedAvoided}"
                                    VerticalOptions="End"
                                    Margin="45,0,0,10"
                                    FontSize="25"
                                    FontAttributes="Bold"
-                                   />
+                                   TextColor="Black"/>
                         </Grid>
                     </Border>
                     <Border Grid.Column="1" Background="#FFC000" WidthRequest="110" Stroke="Transparent" Margin="10,0,0,10">
@@ -100,13 +100,14 @@
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
                         <Grid>
-                            <Label Text="Life Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
+                            <Label Text="Life Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14" TextColor="Black"/>
                             <Image Source="medical" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.LifeTimeSaved}"
                                    VerticalOptions="End"
                                    Margin="45,0,0,10"
                                    FontSize="25"
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold"
+                                   TextColor="Black"/>
                         </Grid>
                     </Border>
                     <Border Grid.Column="2" Background="#FE8C00" WidthRequest="110" Stroke="Transparent" Margin="10,0,0,10"
@@ -116,13 +117,14 @@
                         </Border.StrokeShape>
                         <Grid>
 
-                            <Label Text="Money Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14"/>
+                            <Label Text="Money Saved" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,15" FontSize="14" TextColor="Black"/>
                             <Image Source="peso" HeightRequest="50" Margin="0,0,0,0"/>
                             <Label Text="{Binding Data.MoneySaved}"
                                    VerticalOptions="End"
                                    Margin="45,0,0,10"
                                    FontSize="25"
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold"
+                                   TextColor="Black"/>
                         </Grid>
 
                     </Border>

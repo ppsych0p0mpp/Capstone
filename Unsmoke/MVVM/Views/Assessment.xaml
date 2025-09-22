@@ -151,7 +151,8 @@
         
         <!-- Question 2-->
         <Frame IsVisible="{Binding IsThirdVisible}" HeightRequest="600" Margin="20,20,20,20"
-               HasShadow="True">
+               HasShadow="True"
+               BackgroundColor="White">
             <Grid>
                 <Label Text="    How Long Have You Been Using Cigarettes?"
                        VerticalTextAlignment="Center"
@@ -240,7 +241,7 @@
         </Frame>
         
         <!-- Question 3-->
-        <Frame IsVisible="{Binding IsFourthVisible}" HeightRequest="600" Margin="20,20,20,20"
+        <Frame IsVisible="{Binding IsFourthVisible}" HeightRequest="600" Margin="20,20,20,20" BackgroundColor="White"
                HasShadow="True">
             <Grid>
                 <VerticalStackLayout>
@@ -288,13 +289,14 @@
         
         <!-- Question 4-->
         
-        <Frame IsVisible="{Binding IsFifthVisible}" HeightRequest="600" Margin="20,20,20,20"
+        <Frame IsVisible="{Binding IsFifthVisible}" HeightRequest="600" Margin="20,20,20,20" BackgroundColor="White"
                HasShadow="True">
             <Grid>
                 <Label Text="On An Average, How &#10;     Much Does Per&#10;     Cigarette Cost?"
                        HorizontalOptions="Center"
                        VerticalOptions="Start"
                        FontSize="30"
+                       TextColor="Black"    
                        FontAttributes="Bold"/>
                 <Label Text="₱"
                        FontSize="90"
@@ -331,12 +333,13 @@
         </Frame>
         
         <!-- Question 5-->
-        <Frame IsVisible="{Binding IsSixthVisible}" HeightRequest="600" Margin="20,20,20,20"
+        <Frame IsVisible="{Binding IsSixthVisible}" HeightRequest="600" Margin="20,20,20,20" BackgroundColor="White"
                HasShadow="True">
             <Grid>
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
                     <Label Text="    How Confident Are You&#10;     In Your Ability To Quit &#10;            Cigarettes?"
                            FontAttributes="Bold"
+                           TextColor="Black"
                            FontSize="26"
                            LineBreakMode="WordWrap"/>
                     <CarouselView ItemsSource="{Binding ConfidenceIcons}"
@@ -364,6 +367,7 @@
                     <Label Text="{Binding ConfidenceText}"
                            FontSize="28"
                            FontAttributes="Bold"
+                           TextColor="Black"
                            HorizontalOptions="Center"
                            Margin="0,30,0,0"/>
 
@@ -403,7 +407,7 @@
                 <Label Text="{Binding HeaderText}"
                        FontSize="26"
                        FontAttributes="Bold"
-                       TextColor="#333"
+                       TextColor="Black"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        Margin="20,20,0,10"/>
