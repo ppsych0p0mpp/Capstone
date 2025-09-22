@@ -84,7 +84,8 @@
             </Border>
 
             <Label Text="Education Resources"
-                   Margin="20,10,0,0"/>
+                   Margin="20,10,0,0"
+                   TextColor="Black"/>
 
 
                 <!--Educational Management-->
@@ -183,6 +184,7 @@
                 <CollectionView ItemsSource="{Binding WithdrawalTips}"
                                SelectionMode="None"
                                Margin="0,20,0,0">
+                    
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="1"/>
                     </CollectionView.ItemsLayout>

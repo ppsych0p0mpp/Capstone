@@ -80,18 +80,16 @@ namespace Unsmoke.MVVM.ViewModel
                 var userId = SessionManager.CurrentUser?.UserID;
                 if (string.IsNullOrEmpty(userId)) return;
 
-                // Load document using userId as the key
                 var data = await _firestoreService.GetDocumentByIdAsync<DashboardData>("DashboardStats", userId);
 
                 if (data != null)
                 {
-                    // Document found → load values
                     Data = data;
-                    lastSmokeTime = data.QuitDate;
+                    LastSmokeTime = data.QuitDate; // Load last smoke time
+                    Data.TimewithoutCig = DateTime.UtcNow - LastSmokeTime; // Recalculate timer
                 }
                 else
                 {
-                    // No document yet → initialize new dashboard data
                     Data = new DashboardData
                     {
                         UserID = userId,
@@ -102,7 +100,6 @@ namespace Unsmoke.MVVM.ViewModel
                         LifeTimeSaved = 0
                     };
 
-                    // Save immediately so Firestore always has the document
                     await SaveDashboardDataAsync();
                 }
 
@@ -113,6 +110,7 @@ namespace Unsmoke.MVVM.ViewModel
                 Console.WriteLine($"Error loading dashboard: {ex.Message}");
             }
         }
+
 
         private async Task SaveDashboardDataAsync()
         {
@@ -134,23 +132,25 @@ namespace Unsmoke.MVVM.ViewModel
 
         private void AddCigaretteAction()
         {
-            addsmoke = Data.CigarettesSmokedToday++;
-            //reset Timer
-            lastSmokeTime = DateTime.Now;
-            Data.TimewithoutCig = TimeSpan.Zero; // Reset the time without cigarette
+            Addsmoke = Data.CigarettesSmokedToday++;
+
+            // Reset the QuitDate only when user smokes
+            Data.QuitDate = DateTime.UtcNow;
+            LastSmokeTime = Data.QuitDate;
+            Data.TimewithoutCig = TimeSpan.Zero;
             hasCountedAvoidedToday = false;
 
             OnPropertyChanged(nameof(CigaretteToday));
             RaiseElapsedChanges();
 
-            _ = SaveDashboardDataAsync();// Save progress
+            _ = SaveDashboardDataAsync();
         }
         private void MinusCigaretteAction()
         {
             if (Data.CigarettesSmokedToday > 0)
             {
                 Data.CigarettesSmokedToday--;
-                addsmoke = Data.CigarettesSmokedToday;
+                Addsmoke = Data.CigarettesSmokedToday;
 
                 //Update cigarettes avoided
                 OnPropertyChanged(nameof(CigaretteToday));
@@ -163,24 +163,34 @@ namespace Unsmoke.MVVM.ViewModel
 
         private void UpdateElapsed()
         {
-            Data.TimewithoutCig = DateTime.Now - lastSmokeTime;
+            Data.TimewithoutCig = DateTime.UtcNow - lastSmokeTime;
 
-            // When 24 hours passed without smoking
-            if (Data.TimewithoutCig.TotalHours >= 24 && !hasCountedAvoidedToday)
+            // Calculate how many full days have passed
+            int fullDays = (int)(Data.TimewithoutCig.TotalDays);
+
+            if (fullDays > 0 && !hasCountedAvoidedToday)
             {
-                Data.CigarettedAvoided = _assessment.CigarettesPerDay;
-                hasCountedAvoidedToday = true;
+                // Cigarettes avoided = per day × number of full days
+                int cigarettesAvoided = _assessment.CigarettesPerDay * fullDays;
+                Data.CigarettedAvoided += cigarettesAvoided;
 
-                Data.MoneySaved = _assessment.CigaretteCost;
-                Data.LifeTimeSaved += (Data.CigarettesSmokedToday * 11) / 1440.0;
+                // Money saved
+                double moneyPerDay = _assessment.CigarettesPerDay * _assessment.CigaretteCost;
+                Data.MoneySaved += moneyPerDay * fullDays;
+
+                // Life saved (11 min per cigarette → convert to days)
+                Data.LifeTimeSaved += (cigarettesAvoided * 11) / 1440.0;
+
+                // Mark as counted so we don’t repeat on the same day
+                hasCountedAvoidedToday = true;
 
                 _ = SaveDashboardDataAsync();
             }
 
-            // Auto-save every 60 seconds only
-            if ((DateTime.Now - _lastSaveTime).TotalSeconds >= 60)
+            // Auto-save every 60 seconds to Firestore
+            if ((DateTime.UtcNow - _lastSaveTime).TotalSeconds >= 60)
             {
-                _lastSaveTime = DateTime.Now;
+                _lastSaveTime = DateTime.UtcNow;
                 _ = SaveDashboardDataAsync();
             }
 

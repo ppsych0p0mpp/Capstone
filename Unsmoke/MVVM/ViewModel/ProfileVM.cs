@@ -124,23 +124,6 @@ namespace Unsmoke.MVVM.ViewModel
             _savings.Weekly = weeklySavings;
             _savings.Monthly = monthlySavings;
 
-            // Fetch latest DashboardData so we get updated QuitDate
-            var dashboardData = await __firestoreService.QueryDocumentsAsync<DashboardData>(
-                "DashboardStats",
-                "UserID",
-                userId
-            );
-
-            var userDashboard = dashboardData.FirstOrDefault();
-            if (userDashboard != null)
-            {
-                StreakDays = (DateTime.UtcNow - userDashboard.QuitDate).Days;
-            }
-            else
-            {
-                StreakDays = 0;
-            }
-
 
             // Build the summary message
             SummaryMessage = $"Gender: {_assessment.Gender}\n" +
