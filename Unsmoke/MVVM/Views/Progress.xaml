@@ -135,7 +135,7 @@
             <Border StrokeThickness="0"
                     BackgroundColor="#2E2E2E"
                     Padding="15"
-                    Margin="40,30,40,0"
+                    Margin="40,40,40,0"
                     Grid.Row="1"
                     HeightRequest="250"
                     WidthRequest="370"

@@ -148,24 +148,24 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="24"/>
                 </Border.StrokeShape>
-                <HorizontalStackLayout>
+                <HorizontalStackLayout >
                     <!--Label-->
                         <Label  Text="Today, I smoked" Margin="100,20,0,0" FontSize="20"
                                 TextColor="White"
                                 HorizontalOptions="Center"
                                 />
                         <!--Minus Button-->
-                        <ImageButton Source="minus" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="30"
-                                     Margin="-160,30,20,10"
+                        <ImageButton Source="minus" Command="{Binding MinusCigarette}" HeightRequest="50" WidthRequest="100"
+                                     Margin="-210,40,0,10"
                                      HorizontalOptions="Start"/>
                         <!--Number of Cigarettes-->
                         <Label  Text="{Binding CigaretteToday}"
-                                Margin="20,10,0,0" HorizontalOptions="Center" VerticalOptions="Center" FontSize="50" 
+                                Margin="20,30,0,0" HorizontalOptions="Center" VerticalOptions="Center" FontSize="50" 
                                 TextColor="White"
                                 />
                         <!--Add button-->
-                        <ImageButton Source="plus"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="30"
-                                     Margin="40,20,-0,0"/>
+                        <ImageButton Source="plus"  Command="{Binding AddCigarette}" HeightRequest="50" WidthRequest="100"
+                                     Margin="20,30,0,0"/>
                 </HorizontalStackLayout>
             </Border>
         </Grid>

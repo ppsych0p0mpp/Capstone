@@ -79,7 +79,7 @@ namespace Unsmoke.MVVM.ViewModel
                     // Add the rest of your achievements here...
                 };
 
-            _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
+            _firestoreService = new FirestoreService("capstoneunsmoke", "AIzaSyA2N8h7DJB9K7O3ozSS4boXHWSvbqG6tXY");
             ShowProgress = new RelayCommand(Progress);
             ItemComp = new RelayCommand(ShowItemComparison);
             AddItemCommand = new AsyncRelayCommand(AddItemAsync);
