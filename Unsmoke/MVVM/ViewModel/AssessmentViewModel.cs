@@ -12,12 +12,15 @@ using Unsmoke.MVVM.Models;
 using System.Collections.ObjectModel;
 using Unsmoke.Service;
 using Unsmoke.Helper;
+using Newtonsoft.Json;
 
 namespace Unsmoke.MVVM.ViewModel
 {
    
     public partial class AssessmentViewModel : ObservableObject
     {
+        public ObservableCollection<Currency> AvailableCurrencies { get; } = new ObservableCollection<Currency>(Currency.SupportedCurrencies);
+
         private readonly FirestoreService _firestoreService;
 
         [ObservableProperty]
@@ -77,16 +80,23 @@ namespace Unsmoke.MVVM.ViewModel
         [ObservableProperty]
         private bool isLoadingAnimationPlaying = false;
 
-        private string _summaryMessage;
-        public string SummaryMessage
+        private Currency _selectedCurrency;
+        public Currency SelectedCurrency
         {
-            get => _summaryMessage;
+            get => _selectedCurrency;
             set
             {
-                _summaryMessage = value;
-                OnPropertyChanged();
+                if (_selectedCurrency != value)
+                {
+                    _selectedCurrency = value;
+                    OnPropertyChanged(nameof(SelectedCurrency));
+                    OnPropertyChanged(nameof(Symbol));
+                }
             }
         }
+
+        public string Symbol => SelectedCurrency?.Symbol ?? "₱";
+
 
 
         private Color _maleBackgroundColor = Colors.Gray;
@@ -159,7 +169,7 @@ namespace Unsmoke.MVVM.ViewModel
             seventhbtnQ = new RelayCommand(ResultQ);
             Back = new RelayCommand(BackQ);
  
-            _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
+            _firestoreService = new FirestoreService("capstoneunsmoke", "AIzaSyA2N8h7DJB9K7O3ozSS4boXHWSvbqG6tXY");
         }
         
         
@@ -441,10 +451,19 @@ namespace Unsmoke.MVVM.ViewModel
             OnPropertyChanged(nameof(MaleImageScale));
             OnPropertyChanged(nameof(FemaleImageScale));
         });
+
         
+
+        //Add function for change symbol currency
        
 
-        
+        // API response classes
+        public class API_Obj
+        {
+            public string result { get; set; }
+            public Dictionary<string, double> conversion_rates { get; set; }
 
+            public Dictionary<string, double> ToDictionary() => conversion_rates;
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace Unsmoke.MVVM.ViewModel
             GotoCommunity = new RelayCommand(BacktoComm);
             CreatePostCommand = new AsyncRelayCommand(AddPostAsync);
 
-            _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
+            _firestoreService = new FirestoreService("capstoneunsmoke", "AIzaSyA2N8h7DJB9K7O3ozSS4boXHWSvbqG6tXY");
         }
 
         private async void BacktoComm()

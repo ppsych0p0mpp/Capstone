@@ -27,12 +27,13 @@ namespace Unsmoke
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<Assessment>();
             builder.Services.AddSingleton<Progress>();
-            builder.Services.AddSingleton<CreatePost>();
+            builder.Services.AddTransient<CreatePost>();
             builder.Services.AddSingleton<Community>();
-            builder.Services.AddSingleton<LoginPage>();
-            builder.Services.AddSingleton<RegisterPage>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddSingleton<MyPlan>();
             builder.Services.AddSingleton<ProfilePage>();
+            builder.Services.AddSingleton<SplashScreen>();
             return builder.Build();
         }
     }

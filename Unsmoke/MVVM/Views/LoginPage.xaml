@@ -4,6 +4,7 @@
              x:Class="Unsmoke.MVVM.Views.LoginPage"
              xmlns:vm="clr-namespace:Unsmoke.MVVM.ViewModel"
              NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
              Title="LoginPage"
              BackgroundColor="#faf9f6">
     

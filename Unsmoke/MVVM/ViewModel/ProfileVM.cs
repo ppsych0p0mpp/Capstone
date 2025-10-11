@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Google.Cloud.Firestore.V1;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -20,8 +22,15 @@ namespace Unsmoke.MVVM.ViewModel
 {
     public partial class ProfileVM : ObservableObject
     {
+        public ObservableCollection<Currency> AvailableCurrencies { get; }
+        private Dictionary<string, double> _conversionRates = new();
+
+        [ObservableProperty]
+        Currency selectedCurrency;
+
+        private string _baseCurrency = "PHP";  // or your default base
+
         private readonly FirestoreService __firestoreService;
-        private readonly CultureInfo pesoCulture = new CultureInfo("en-PH");
 
         public ICommand GotoDash { get; }
         public ICommand Logout { get; }
@@ -60,17 +69,14 @@ namespace Unsmoke.MVVM.ViewModel
 
         public ProfileVM()
         {
-            __firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
-            GotoDash = new RelayCommand(Backto);
+            __firestoreService = new FirestoreService("capstoneunsmoke", "AIzaSyA2N8h7DJB9K7O3ozSS4boXHWSvbqG6tXY");
             Logout = new AsyncRelayCommand(LogoutUserAsync);
+            AvailableCurrencies = new ObservableCollection<Currency>(Currency.SupportedCurrencies);
+            SelectedCurrency = AvailableCurrencies[0];
+            FetchAndSetRatesAsync(_baseCurrency).ConfigureAwait(false);
             Task.Run(DisplayAssessmentAsync);
         }
 
-        private void Backto()
-        {
-            Application.Current.MainPage = App.Services.GetRequiredService<AppShell>();
-            return;
-        }
 
         //Display Assessment Summary
         private async Task DisplayAssessmentAsync()
@@ -81,14 +87,12 @@ namespace Unsmoke.MVVM.ViewModel
                 return;
             }
 
-            // Get logged-in user
             var userId = SessionManager.CurrentUser.UserID;
             FullName = SessionManager.CurrentUser.FullName;
 
-            // Fetch assessment by userId field instead of document ID
             var assessments = await __firestoreService.QueryDocumentsAsync<Models.Assessment>(
                 "assessments",
-                "UserID", userId // field name in Firestore
+                "UserID", userId
             );
 
             _assessment = assessments.FirstOrDefault();
@@ -99,43 +103,10 @@ namespace Unsmoke.MVVM.ViewModel
                 return;
             }
 
-            // Set assessment date
             AssessmentDate = _assessment.DateTaken.ToString("MMMM dd, yyyy");
 
-            // Calculate total days
-            double daysSmoked = _assessment.YearMonth == "Years"
-                ? _assessment.DurationOfSmoking * 365
-                : _assessment.DurationOfSmoking * 30;
-
-            // Daily cost
-            double dailyCost = _assessment.CigarettesPerDay * _assessment.CigaretteCost;
-
-            // Total money spent
-            double moneySpent = dailyCost * daysSmoked;
-
-            // Savings calculations
-            double dailySavings = dailyCost;
-            double weeklySavings = dailyCost * 7;
-            double monthlySavings = dailyCost * 30;
-
-            // Store in Savings model
-            _savings.totalSaved = moneySpent;
-            _savings.Daily = dailySavings;
-            _savings.Weekly = weeklySavings;
-            _savings.Monthly = monthlySavings;
-
-
-            // Build the summary message
-            SummaryMessage = $"Gender: {_assessment.Gender}\n" +
-                             $"Years of Smoking: {_assessment.DurationOfSmoking} {_assessment.YearMonth}\n" +
-                             $"Cigarettes/Day: {_assessment.CigarettesPerDay}\n" +
-                             $"Cost per Pack: {_assessment.CigaretteCost.ToString("C", pesoCulture)}\n" +
-                             $"Money Spent: {_savings.totalSaved.ToString("C", pesoCulture)}\n" +
-                             $"Daily Savings: {_savings.Daily.ToString("C", pesoCulture)}\n" +
-                             $"Weekly Savings: {_savings.Weekly.ToString("C", pesoCulture)}\n" +
-                             $"Monthly Savings: {_savings.Monthly.ToString("C", pesoCulture)}\n" +
-                             $"Yearly Savings: {(_savings.Daily * 365).ToString("C", pesoCulture)}\n" +
-                             $"Confidence Level: {_assessment.ConfidenceLevel}";
+            // Initially update the summary in default currency
+            UpdateAllCurrencyDisplays();
         }
 
 
@@ -156,6 +127,70 @@ namespace Unsmoke.MVVM.ViewModel
             Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
         }
 
-        //Add a method for streak Days smoke free
+        //Function for change Currency
+        partial void OnSelectedCurrencyChanged(Currency value)
+        {
+            if (value != null)
+            {
+                UpdateAllCurrencyDisplays();
+            }
+        }
+
+        private async Task FetchAndSetRatesAsync(string baseCurrency)
+        {
+            string url = $"https://v6.exchangerate-api.com/v6/cdd7ad568b497f3486468ac2/latest/{baseCurrency}";
+            using var client = new HttpClient();
+            var json = await client.GetStringAsync(url);
+            var apiObj = JsonConvert.DeserializeObject<API_Obj>(json);
+            _conversionRates = apiObj.conversion_rates.ToDictionary();
+            UpdateAllCurrencyDisplays();
+        }
+
+        private void UpdateAllCurrencyDisplays()
+        {
+            if (_assessment == null) return;
+
+            double rate = 1.0;
+            if (SelectedCurrency != null && _conversionRates.ContainsKey(SelectedCurrency.Code))
+                rate = _conversionRates[SelectedCurrency.Code];
+
+            var culture = new CultureInfo(SelectedCurrency.CultureCode);
+
+            double dailyCost = _assessment.CigarettesPerDay * _assessment.CigaretteCost;
+            double dailyCostConverted = dailyCost * rate;
+
+            double daysSmoked = _assessment.YearMonth == "Years"
+                ? _assessment.DurationOfSmoking * 365
+                : _assessment.DurationOfSmoking * 30;
+
+            double moneySpentConverted = dailyCostConverted * daysSmoked;
+            double dailySavings = dailyCostConverted;
+            double weeklySavings = dailyCostConverted * 7;
+            double monthlySavings = dailyCostConverted * 30;
+            double yearlySavings = dailyCostConverted * 365;
+
+            SummaryMessage =
+                $"Gender: {_assessment.Gender}\n" +
+                $"Years of Smoking: {_assessment.DurationOfSmoking} {_assessment.YearMonth}\n" +
+                $"Cigarettes/Day: {_assessment.CigarettesPerDay}\n" +
+                $"Cost per Pack: {dailyCostConverted.ToString("C", culture)}\n" +
+                $"Money Spent: {moneySpentConverted.ToString("C", culture)}\n" +
+                $"Daily Savings: {dailySavings.ToString("C", culture)}\n" +
+                $"Weekly Savings: {weeklySavings.ToString("C", culture)}\n" +
+                $"Monthly Savings: {monthlySavings.ToString("C", culture)}\n" +
+                $"Yearly Savings: {yearlySavings.ToString("C", culture)}\n" +
+                $"Confidence Level: {_assessment.ConfidenceLevel}";
+
+            OnPropertyChanged(nameof(SummaryMessage));
+        }
+
+        // API response classes
+        public class API_Obj
+        {
+            public string result { get; set; }
+            public Dictionary<string, double> conversion_rates { get; set; }
+
+            public Dictionary<string, double> ToDictionary() => conversion_rates;
+        }
     }
 }

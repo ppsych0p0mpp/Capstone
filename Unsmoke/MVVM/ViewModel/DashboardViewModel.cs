@@ -40,7 +40,7 @@ namespace Unsmoke.MVVM.ViewModel
 
         public DashboardViewModel()
         {
-            _firestoreService = new FirestoreService("capstone-c5e34", "AIzaSyDH3bHUr5GDw78m3oJtOaddHoPjtnk5Yxc");
+            _firestoreService = new FirestoreService("capstoneunsmoke", "AIzaSyA2N8h7DJB9K7O3ozSS4boXHWSvbqG6tXY");
             Data = new DashboardData
             {
                 TimewithoutCig = TimeSpan.Zero,
