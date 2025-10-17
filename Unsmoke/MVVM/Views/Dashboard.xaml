@@ -7,15 +7,14 @@
              NavigationPage.HasNavigationBar="False"
              Title="Dashboard"
              Shell.FlyoutBehavior="Flyout"
-             BackgroundColor="#f3f3f3"
-             >
-    
+             BackgroundColor="#f3f3f3">
+
     <ContentPage.BindingContext>
         <vm:DashboardViewModel/>
     </ContentPage.BindingContext>
-
-        <ScrollView>
-        <Grid Background="#FFFFFF">
+    
+    <ScrollView>
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -168,6 +167,8 @@
                                      Margin="20,30,0,0"/>
                 </HorizontalStackLayout>
             </Border>
+            
+            
         </Grid>
     </ScrollView>
 

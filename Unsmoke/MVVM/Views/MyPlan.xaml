@@ -12,6 +12,8 @@
         <vm:MyPlanVM/>
     </ContentPage.BindingContext>
 
+
+
     <Grid>
         <ScrollView>
         <VerticalStackLayout>

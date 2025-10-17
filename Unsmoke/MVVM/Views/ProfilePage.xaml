@@ -9,8 +9,10 @@
     <ContentPage.BindingContext>
         <vm:ProfileVM/>
     </ContentPage.BindingContext>
+
     
-    <VerticalStackLayout Spacing="-10">
+    <ScrollView>
+        <VerticalStackLayout Spacing="-10">
         <!-- User Details -->
         
         <Border WidthRequest="370"
@@ -125,11 +127,12 @@
 
         <Button Text="Logout"
                 WidthRequest="360"
-                Margin="0,90,0,0"
+                Margin="0,30,0,0"
                 TextColor="Black"
                 FontAttributes="Bold"
                 FontSize="20"
                 Command="{Binding Logout}"
                 BackgroundColor="#FFC000"/>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

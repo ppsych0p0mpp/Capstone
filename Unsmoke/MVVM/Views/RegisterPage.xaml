@@ -15,9 +15,20 @@
     <ScrollView>
         <Grid>
             <VerticalStackLayout Spacing="20">
-                <Image Source="logo"
-                   WidthRequest="200"
-                   />
+                <Border Margin="20"
+                        WidthRequest="200"
+                        HeightRequest="200"
+                        BackgroundColor="#262625"
+                        Stroke="Transparent">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="50"/>
+                    </Border.StrokeShape>
+                    <Image Source="logo"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"
+                       WidthRequest="250"
+                                    />
+                </Border>
                 <Label Text=" Join Unsmoke "
                    HorizontalOptions="Center"
                    FontSize="30"
@@ -127,7 +138,7 @@
                      TextColor="Black"
                      FontSize="20"
                      FontAttributes="Bold"
-                     Margin="0,40,0,0"
+                     Margin="0,20,0,0"
                      WidthRequest="290"
                      HeightRequest="50"
                      CornerRadius="30"

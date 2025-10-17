@@ -21,6 +21,9 @@ namespace Unsmoke.MVVM.ViewModel
     {
         public ObservableCollection<Currency> AvailableCurrencies { get; } = new ObservableCollection<Currency>(Currency.SupportedCurrencies);
 
+        private Dictionary<string, double> _conversionRates = new();
+        private string _baseCurrencyCode = "PHP"; // Default base currency
+
         private readonly FirestoreService _firestoreService;
 
         [ObservableProperty]
@@ -81,6 +84,7 @@ namespace Unsmoke.MVVM.ViewModel
         private bool isLoadingAnimationPlaying = false;
 
         private Currency _selectedCurrency;
+
         public Currency SelectedCurrency
         {
             get => _selectedCurrency;
@@ -91,6 +95,7 @@ namespace Unsmoke.MVVM.ViewModel
                     _selectedCurrency = value;
                     OnPropertyChanged(nameof(SelectedCurrency));
                     OnPropertyChanged(nameof(Symbol));
+                    _ = UpdateConversionRatesAsync(_baseCurrencyCode); // Load rates on selection change
                 }
             }
         }
@@ -452,10 +457,50 @@ namespace Unsmoke.MVVM.ViewModel
             OnPropertyChanged(nameof(FemaleImageScale));
         });
 
-        
 
-        //Add function for change symbol currency
-       
+
+        //function for change symbol currency it will also change the rate of the input amount
+        private async Task UpdateConversionRatesAsync(string baseCurrency)
+        {
+            try
+            {
+                string url = $"https://v6.exchangerate-api.com/v6/cdd7ad568b497f3486468ac2/latest/{baseCurrency}";
+                using var client = new HttpClient();
+                var json = await client.GetStringAsync(url);
+                var apiResponse = JsonConvert.DeserializeObject<API_Obj>(json);
+                _conversionRates = apiResponse.conversion_rates;
+
+                ApplyCurrentCurrencyConversion();
+            }
+            catch (Exception ex)
+            {
+                // Handle errors (display alert or fallback)
+                System.Diagnostics.Debug.WriteLine($"Failed to update rates: {ex.Message}");
+            }
+        }
+
+        private void ApplyCurrentCurrencyConversion()
+        {
+            if (_conversionRates == null || SelectedCurrency == null || Assessment == null)
+                return;
+
+            if (!_conversionRates.ContainsKey(SelectedCurrency.Code))
+                return;
+
+            // Convert current cost based on rates
+            double currentCost = Assessment.CigaretteCost;
+            double baseToCurrentRate = _conversionRates[SelectedCurrency.Code];
+
+            // Assuming the cost was input in base currency; adjust accordingly if not
+            double convertedCost = currentCost * baseToCurrentRate;
+
+            // Update with rounded value
+            Assessment.CigaretteCost = Math.Round(convertedCost, 2);
+
+            // Notify property changed to update UI
+            OnPropertyChanged(nameof(Assessment));
+        }
+
 
         // API response classes
         public class API_Obj

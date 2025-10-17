@@ -10,7 +10,7 @@
     <ContentPage.BindingContext>
         <vm:ProgressVM/>
     </ContentPage.BindingContext>
-    
+
 
     <ScrollView>
         <Grid>

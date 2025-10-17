@@ -10,9 +10,8 @@
     <ContentPage.BindingContext>
         <vm:AssessmentViewModel/>
     </ContentPage.BindingContext>
+
     
-
-
     <VerticalStackLayout>
         <ImageButton Source="back"
                      HeightRequest="40"
@@ -41,7 +40,7 @@
         </HorizontalStackLayout>
 
 
-        <Frame BackgroundColor="#faf9f6" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
+        <Frame BackgroundColor="Transparent" BorderColor="Transparent" IsVisible="{Binding IsFirstVisible}"
                Margin="0,100,0,0"
                HeightRequest="1000">
             <Grid>
@@ -300,11 +299,10 @@
                        FontAttributes="Bold"/>
 
                 <!-- pick a symbol-->
-
                 <Border Stroke="Transparent"
                         HeightRequest="100">
                     <HorizontalStackLayout>
-                        <Picker Title="$"
+                        <Picker Title="₱"
                                 Margin="60,-80,10,-90"
                                 TextColor="#FCC000"
                                 TitleColor="#FCC000"
@@ -331,8 +329,6 @@
                                Focused="CigaretteCostEntry_Focused"/>
                     </HorizontalStackLayout>
                 </Border>
-                <!-- Add function when click it can change the currency -->
-                
 
                 <Button Text="Next" Margin="0,120,0,0"
                          VerticalOptions="End"
@@ -451,6 +447,7 @@
                 </VerticalStackLayout>
             </Grid>
         </Frame>
+        <!-- Chart history for cigarette smoke today -->
 
 
     </VerticalStackLayout>

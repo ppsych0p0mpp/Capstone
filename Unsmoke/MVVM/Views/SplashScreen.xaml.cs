@@ -9,11 +9,19 @@ public partial class SplashScreen : ContentPage
 	{
 
 		InitializeComponent();
-
+        StartTimer();
 
     }
+    private void StartTimer()
+    {
+        TimeSpan splashDuration = TimeSpan.FromSeconds(3); // gif duration
 
-    //Add animation three dots loading
-  
+        Dispatcher.StartTimer(splashDuration, () =>
+        {
+            Application.Current.MainPage = App.Services.GetRequiredService<LoginPage>();
+            return false; // Return false to stop the timer after execution
+        });
+    }
+
 
 }

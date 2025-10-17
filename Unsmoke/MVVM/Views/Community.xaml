@@ -10,8 +10,8 @@
     <ContentPage.BindingContext>
         <vm:CommunityVm/>
     </ContentPage.BindingContext>
-    
-    
+   
+
     <Grid RowDefinitions="*,Auto,Auto">
         <ScrollView>
             <VerticalStackLayout>
